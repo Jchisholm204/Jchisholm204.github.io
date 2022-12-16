@@ -67,3 +67,51 @@ footer{
 .info li{
     padding: 10px;
 }
+
+.posts{
+    display: grid;
+    margin-left: 245px;
+}
+
+.article{
+    display: flex;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 0px;
+    min-width: 500px;
+    max-width: 900px;
+    height: 220px;
+    width: auto;
+    overflow: hidden;
+    transition: 200ms ease-in-out;
+}
+.article:hover {
+    transform: translate(-2px, -2px);
+}
+
+.article:hover .article-img{
+    transform: scale(1.03);
+}
+
+.article-img {
+    transition: 200ms ease-in-out;
+    transform: scale(1);
+    width: 45%;
+    height: 100%;
+    min-height: 11rem;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+}
+.article-content{
+    width: 100%;
+    margin: 10px 20px 5px 20px;
+    display: block;
+    text-decoration: inherit;
+    color: inherit;
+}
+.article-title{
+    padding-bottom: 10px;
+}
