@@ -6,19 +6,21 @@
     <title>Home</title>
     <link rel="shortcut icon" href="assets/favicon.ico" />
     <link href="styles/index.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-<body>
+<body id="body">
+    <script src="scripts/index.js"></script>
     <aside id="sidebar">
-        <header>
-            <div class="auth">
-                <img src="assets/jc_boc.png" alt="JClogo" />
-                <h2>Jacob Chisholm</h2>
+        <header id = "sidebar-header">
+            <div id="auth">
+                <img src="assets/jc_boc.png" alt="JClogo" id="jc_logo" />
+                <h2 id="auth-name">Jacob Chisholm</h2>
             </div>
-            <p>I love robotics, programming and electrical all to much to decide which one to pursue professionally. Currently enrolled in Applied Science at Queens University.</p>
+            <p id="auth-about">I love robotics, programming and electrical all to much to decide which one to pursue professionally. Currently enrolled in Applied Science at Queens University.</p>
         </header>
-        <footer>
+        <footer id="sidebar-footer">
             <section class="info">
-                <h4><span>Contact</span></h4>
+                <h4 id="contact-header"><span>Contact</span></h4>
                 <ul>
                     <li id="github">
                         <a href="http://github.com/jchisholm204">
@@ -44,10 +46,10 @@
             </section>
         </footer>
     </aside>
-    <div class="posts">
+    <div class="posts" id="page-content">
         <article class="article">
-            <a href="/firstrobotics/elec/" class="article-img" style="background-image: url(/assets/frc/elec_board.jpg)"></a>
-            <a class="article-content" href="/firstrobotics/elec/">
+            <a href="/firstrobotics/elec/" class="article-img" style="background-image: url(/assets/frc/elec_board_main.jpg)"></a>
+            <a class="article-content" href="/firstrobotics/elec">
                 <h2 class="article-title">First Robotics 2022: Electrical Subsystem</h2>
                 <p class="article-descript">
                     A breif summary of my work done while competing in the First Robotics
@@ -60,7 +62,7 @@
         </article>
         <article class="article">
             <a href="/timebot/" class="article-img" style="background-image: url(/assets/timebot/logo.png)"></a>
-            <a class="article-content" href="/timebot/">
+            <a class="article-content" href="/timebot">
                 <h2 class="article-title">TimeBot: A Python Discord Bot</h2>
                 <p class="article-descript">
                     An hour tracking, statistics generating, music playing discord bot.
@@ -71,8 +73,8 @@
             </a>
         </article>
         <article class="article">
-            <a href="/firstrobotics/prog/" class="article-img" style="background-image: url(/assets/frc/elec)"></a>
-            <a class="article-content" href="/firstrobotics/prog/">
+            <a href="/firstrobotics/prog/" class="article-img" style="background-image: url(/assets/frc/prog_logo_wpi.png)"></a>
+            <a class="article-content" href="/firstrobotics/prog">
                 <h2 class="article-title">First Robotics 2022: Programming Subsystem</h2>
                 <p class="article-descript">
                     A breif summary of my work done while competing in the First Robotics
@@ -84,8 +86,8 @@
             </a>
         </article>
         <article class="article">
-            <a href="/vexrobotics/1010V/" class="article-img" style="background-image: url(/assets/)"></a>
-            <a class="article-content" href="/vexrobotics/1010V/">
+            <a href="/vexrobotics/1010V/" class="article-img" style="background-image: url(/assets/vex/logo_pros.png)"></a>
+            <a class="article-content" href="/vexrobotics/1010V">
                 <h2 class="article-title">Vex Robotics: 1010V</h2>
                 <p class="article-descript">
                     A summary of my time spent on the VEX Robotics team 1010V <br />
@@ -96,7 +98,7 @@
         </article>
         <article class="article">
             <a href="/vexrobotics/tournament/" class="article-img" style="background-image: url(/assets/)"></a>
-            <a class="article-content" href="/timebot/">
+            <a class="article-content" href="/vexrobotics/tournament">
                 <h2 class="article-title">Vex Robotics: Tournaments</h2>
                 <p class="article-descript">
                     Setting up for Vex EDR tournaments can be a difficult challenge, not to mention time consuming. <br />
@@ -107,7 +109,7 @@
         </article>
         <article class="article">
             <a href="/timebot/" class="article-img" style="background-image: url(/assets/jc_boc.png)"></a>
-            <a class="article-content" href="/timebot/">
+            <a class="article-content" href="/vexrobotics/tentonbot">
                 <h2 class="article-title">Python Discord Bot #2: TenTonBot</h2>
                 <p class="article-descript">
                     The second (sort of) discord bot I've made to date: TenTonBot. <br />

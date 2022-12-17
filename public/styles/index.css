@@ -25,7 +25,7 @@ body {
     padding: 20px;
 }
 
-.auth{
+#auth{
     text-align:center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-bottom: 10px;
@@ -33,7 +33,7 @@ body {
     border-bottom: 1px solid black;
 }
 
-.auth img {
+#auth img {
     height: 60px;
     width: auto;
     display: block;
@@ -70,6 +70,7 @@ footer{
 
 .posts{
     display: grid;
+    row-gap: 10px;
     margin-left: 245px;
 }
 
@@ -80,9 +81,9 @@ footer{
     border-radius: 10px;
     margin: 10px;
     padding: 0px;
-    min-width: 500px;
+    /*min-width: 400px;*/
     max-width: 900px;
-    height: 220px;
+    height: 100%;
     width: auto;
     overflow: hidden;
     transition: 200ms ease-in-out;
