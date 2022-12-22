@@ -1,0 +1,67 @@
+
+
+/*Top*/
+
+#top-img {
+    width: 100%;
+    height: 300px;
+    display: block;
+    min-height: 11rem;
+    background-size: cover;
+    background-position: top;
+    position: relative;
+}
+
+.container{
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    padding-top: 100px;
+}
+
+
+.container h1{
+    margin: 0px;
+    text-align: center;
+    word-break: break-word;
+    font-size: 3.75rem;
+    color: white;
+}
+
+.container p {
+    margin: 0px;
+    text-align: center;
+    word-break: break-word;
+    font-size: 1.25rem;
+    color: white;
+}
+
+/*Page Content*/
+
+#page-content {
+    display: flex;
+    padding: 10px;
+    padding-left: 30px;
+    margin: 0px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.paragraph{
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    text-align: left;
+
+}
+
+.paragraph h2{
+    padding: 0px;
+    margin: 0px;
+}
+
+.paragraph p{
+    padding: 0px;
+    margin: 0px;
+}

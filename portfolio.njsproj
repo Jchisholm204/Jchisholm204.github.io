@@ -30,10 +30,32 @@
   <ItemGroup>
     <Content Include="public\404.html" />
     <Content Include="public\assets\favicon.ico" />
+    <Content Include="public\assets\frc\elec_board_eth.jpg" />
+    <Content Include="public\assets\frc\elec_board_main.jpg" />
+    <Content Include="public\assets\frc\elec_wiring_intake.HEIC" />
+    <Content Include="public\assets\frc\logo_first.png" />
+    <Content Include="public\assets\frc\logo_rapid-react.png" />
+    <Content Include="public\assets\frc\prog_logo_wpi.png" />
+    <Content Include="public\assets\frc\robot_buz.jpg" />
+    <Content Include="public\assets\frc\robot_front.HEIC" />
+    <Content Include="public\assets\frc\robot_side_left.HEIC" />
+    <Content Include="public\assets\frc\robot_side_right.jpg" />
+    <Content Include="public\assets\frc\wiring_board_main-full.jpg" />
+    <Content Include="public\assets\frc\wiring_side_right.jpg" />
+    <Content Include="public\assets\GitHub.png" />
+    <Content Include="public\assets\instagram.jpg" />
+    <Content Include="public\assets\jc_boc.png" />
+    <Content Include="public\assets\linkedin.png" />
+    <Content Include="public\assets\mail.png" />
+    <Content Include="public\assets\timebot\logo.png" />
+    <Content Include="public\assets\timebot\screenshot.png" />
+    <Content Include="public\assets\vex\logo_pros.png" />
     <Content Include="public\index.html" />
-    <Content Include="public\styles\index.css">
-      <SubType>Code</SubType>
-    </Content>
+    <Content Include="public\pages\frc_electrical.html" />
+    <Content Include="public\scripts\index.js" />
+    <Content Include="public\styles\404.css" />
+    <Content Include="public\styles\frc_electrical.css" />
+    <Content Include="public\styles\index.css" />
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -41,6 +63,11 @@
   <ItemGroup>
     <Folder Include="public\" />
     <Folder Include="public\assets\" />
+    <Folder Include="public\assets\frc\" />
+    <Folder Include="public\assets\timebot\" />
+    <Folder Include="public\assets\vex\" />
+    <Folder Include="public\pages\" />
+    <Folder Include="public\scripts\" />
     <Folder Include="public\styles\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
