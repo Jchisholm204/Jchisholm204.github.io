@@ -38,16 +38,141 @@
         </ul>
     </aside>
 
-    <div id="top-img" class="headline" style="background-image: url(../assets/timebot/output_timebot.png)">
+    <div id="top-img" class="headline" style="background-image: url(../assets/fsae/screenshot_git.png)">
         <div class="container">
             <h1>FSAE: CAL</h1>
-            <p class="description">Queen's 'Formula SAE: CAN Abstraction Layer</p>
+            <p class="description">Queen's Formula SAE: CAN Abstraction Layer</p>
         </div>
     </div>
     <div id="page-content">
         <div class="paragraph">
             <h2>Introduction</h2>
-            <p>ogor</p>
+            <p>CAL was the first project I completed for the Queens Formula SAE Team.</p>
+            <br/>
+            <p>Originally proposed by Electrical Team Lead Ethan 
+                Peterson, CAL (CAN Abstraction Layer) works to 
+                provide a simple method for dealing with CAN messages
+                coming from the MoTec ECU (Engine Control Unit) and
+                PDM (Power Distribution Module).</p>
+        </div>
+        <div class="paragraph">
+            <h2>The CAN Bus</h2>
+            <p>The CAN (Controller Area Network) bus was originally 
+                developed in 1986 to simplify automotive wiring. 
+                While many newer cars are transferring to Ethernet
+                as an alternative communication method, the CAN bus
+                is still widely used for a variety of applications 
+                including FSAE.</p>
+        </div>
+        <div class="paragraph">
+            <h2>The CAN Message</h2>
+            <p>CAN messages contain an 11 bit identifier followed 
+                by 8 8 bit messages.  The identifier can be contained
+                as an unsigned 32 bit integer and is usually 
+                represented by a hexadecimal identifier.</p>
+            <br/>
+            <p>CAN messages are represented within the program
+                through the CAN_msg_t structure.  This structure
+                contains all of the information about a particular
+                message as well as the data within the message.</p>
+        </div>
+        <div class="paragraph">
+            <h2>The 'data' Structure</h2>
+            <p>The data structure contains all of the necessary
+                information to convert CAN messages into usable
+                data.  Since the MoTec ECU and PDM send out data
+                types other than unsigned 8 bit integers, it is
+                important to keep track of all the data emitted
+                by these devices, as well as how they format the
+                data.  For example, both the ECU uses boolean
+                values to indicate the state of physical switches. 
+                In order to retrieve the Boolean values, bit shifting
+                and type conversion must be used.  The data struct
+                stores all of the information needed to complete
+                this transformation including the CAN ID, position
+                of the data frame and bit shift to apply.</p>
+        </div>
+        <div class="paragraph">
+            <h2>How It Works</h2>
+            <p>In order to make CAL more versatile, the user
+                is still responsible for finding another means
+                of receiving the CAN message.  While this
+                complicates things for the end user, it allows
+                CAL to be used with a variety of microcontrollers
+                and CAN bus interface devices.</p>
+            <br/>
+            <p>Once the user has finished the hardware side
+                implementation, they can include the library
+                in their Arduino project.  From there its as
+                simple as calling the update method and passing
+                in the received CAN message, the premade data
+                structure that corresponds to the data they would
+                like to extract, as well as the variable where
+                they would like to store the information.  The
+                CAN message and CAN data are pass by reference
+                while they return value is pass by pointer.
+                The update method returns 0 upon success or
+                >0 if there is a failure along any point.</p>
+        </div>
+        <div class="paragraph">
+            <h2>The Update Method</h2>
+            <p>The Update method, while not necessary,
+                is a helpful tool that makes extracting
+                data off the bus much easier than the
+                alternative of doing it manually.  After
+                all, why write your own code when a library
+                has already done it for you?</p>
+            <br/>
+            <p>The update method takes three arguments
+                and returns the value through pass by
+                pointer.  The arguments are the CAN message
+                received in the form of the CAN_msg_t
+                structure and the CAN data to extract
+                in the form of the data structure. The
+                third argument is overloaded for use of
+                multiple data types and is used to return
+                the value through pass by pointer.</p>
+            <br/>
+            <p>The first thing the update method checks for
+                is if the ID of the message matches the ID
+                of the data.  If it matches, the method
+                continues or, if it fails, the method returns
+                1 indicating incorrect ID.</p>
+            <code>
+                // Return 1 on incorrect CAN ID
+                if(!(msg.id == CANdata.id)) return 1;
+            </code>
+            <p>Once it is known that the ID is correct, the
+                method checks to ensure that the datatype of
+                the data matches the datatype of the return
+                variable passed into the function.</p>
+            <code>
+                // Check datatypes
+                if(CANdata.dataType == DataType::uint8){
+                    *data = (msg.data[CANdata.start_idx] & CANdata.bitmask)*CANdata.multiplier;
+                    return 0;
+                }
+                else if(CANdata.dataType == DataType::int16){
+                    *data = ((((int16_t)msg.data[CANdata.start_idx + 1] << 8) | msg.data[CANdata.start_idx]) & CANdata.bitmask)*CANdata.multiplier;
+                    return 0;
+                }
+            </code>
+            <p>Finally, the type conversions, bit shifting,
+                and multipliers are added in order to transform
+                the data into its final form.  Shown above is
+                the data conversion for integers, below is the
+                data conversion for Booleans.  Float data types
+                are converted the same way as integers but are
+                cast to float and a non-zero 1> multiplier is
+                applied to finalize the conversion.</p>
+                <code>
+                    // Perform bitmask and evaluate (true | false)
+                    *data = (msg.data[CANdata.start_idx] & CANdata.bitmask) > 0;
+                </code>
+        </div>
+        <div class="paragraph">
+            <h2>Conclusion</h2>
+            <p>The final code can be found <a href="https://github.com/qfsae/zenith/tree/master/cal">here</a> on the Queens FSAE github.</p>
         </div>
     </div>
 </body>
