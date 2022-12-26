@@ -7,9 +7,12 @@
     <link rel="shortcut icon" href="../assets/favicon.ico?" />
     <link href="../styles/article_header.css" rel="stylesheet" />
     <link href="../styles/article.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles/github-dark.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body id="body">
+    <script src="../scripts/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
     <aside id="topbar">
         <a id="topbar-header" href="../index.html">
             <img src="../assets/jc_boc.png" alt="JClogo" id="jc_logo" />
@@ -138,25 +141,26 @@
                 of the data.  If it matches, the method
                 continues or, if it fails, the method returns
                 1 indicating incorrect ID.</p>
-            <code>
-                // Return 1 on incorrect CAN ID
-                if(!(msg.id == CANdata.id)) return 1;
-            </code>
+            <pre><code class="language-cpp">
+// Return 1 on incorrect CAN ID
+if(!(msg.id == CANdata.id)) return 1;
+            </code></pre>
             <p>Once it is known that the ID is correct, the
                 method checks to ensure that the datatype of
                 the data matches the datatype of the return
                 variable passed into the function.</p>
-            <code>
-                // Check datatypes
-                if(CANdata.dataType == DataType::uint8){
-                    *data = (msg.data[CANdata.start_idx] & CANdata.bitmask)*CANdata.multiplier;
-                    return 0;
-                }
-                else if(CANdata.dataType == DataType::int16){
-                    *data = ((((int16_t)msg.data[CANdata.start_idx + 1] << 8) | msg.data[CANdata.start_idx]) & CANdata.bitmask)*CANdata.multiplier;
-                    return 0;
-                }
-            </code>
+            <pre>
+            <code class="language-cpp">
+// Check datatypes
+if(CANdata.dataType == DataType::uint8){
+    *data = (msg.data[CANdata.start_idx] & CANdata.bitmask)*CANdata.multiplier;
+    return 0;
+}
+else if(CANdata.dataType == DataType::int16){
+    *data = ((((int16_t)msg.data[CANdata.start_idx + 1] << 8) | msg.data[CANdata.start_idx]) & CANdata.bitmask)*CANdata.multiplier;
+    return 0;
+}
+            </code></pre>
             <p>Finally, the type conversions, bit shifting,
                 and multipliers are added in order to transform
                 the data into its final form.  Shown above is
@@ -165,14 +169,19 @@
                 are converted the same way as integers but are
                 cast to float and a non-zero 1> multiplier is
                 applied to finalize the conversion.</p>
-                <code>
-                    // Perform bitmask and evaluate (true | false)
-                    *data = (msg.data[CANdata.start_idx] & CANdata.bitmask) > 0;
-                </code>
+                <pre><code class="language-cpp">
+// Perform bitmask and evaluate (true | false)
+*data = (msg.data[CANdata.start_idx] & CANdata.bitmask) > 0;
+                </code></pre>
         </div>
         <div class="paragraph">
             <h2>Conclusion</h2>
-            <p>The final code can be found <a href="https://github.com/qfsae/zenith/tree/master/cal">here</a> on the Queens FSAE github.</p>
+            <p>With CAL completed I am moving on to work on other
+                projects within the team.  The final code will
+                eventually be used in projects like the steering
+                wheel.  The source/library code can be found 
+                <a href="https://github.com/qfsae/zenith/tree/master/cal">here</a> 
+                on the Queens FSAE github.</p>
         </div>
     </div>
 </body>
