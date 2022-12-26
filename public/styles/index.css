@@ -66,6 +66,10 @@ footer{
 }
 .info li{
     padding: 10px;
+    transition: 120ms ease-in-out;
+}
+.info li:hover{
+    transform: scale(1.08);
 }
 
 .posts{
