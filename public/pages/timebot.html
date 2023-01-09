@@ -46,7 +46,62 @@
     <div id="page-content">
         <div class="paragraph">
             <h2>Introduction</h2>
-            <p>TimeBot is a Discord Bot..  More to come soon</p>
+            <p>
+                TimeBot is a Discord Bot. The original purpose of TimeBot was to collect
+                the discord usage analytics of me and my friends. Since the development
+                of TimeBot proceeded over years and was more of a random late night project
+                than anything else, I will not do a full overview of the code here because
+                frankly its a mess of garbage.  The entire thing was written in Python and
+                was not optimized or refactored a single time. Modules and commands were
+                simply added and while the bot started out as being used for usage analytics,
+                it eventually gained the ability to play music, send out leaderboards and even
+                spit out random quotes.  Rather, this article will be a brief overview of TimeBots
+                functions and how I stored data before I knew SQL Existed.
+            </p>
+            <h2>On Ready</h2>
+            <p>
+                The on_ready() function is the first function to run when the bot starts up.
+                It is also one of the most crucial functions to the successful operation of
+                the bot. As with most discord bots, TimeBot first outputs a small online
+                message as well as a list of all of the servers it is connected to. Then, the
+                bot records the current time and saves it into a file. This is necessary to the
+                operation of the bot as if the bot goes down while people are connected it can
+                sometimes result in time recording glitches where it would record a much higher
+                number than the actual. <br>
+                Before this function finishes, it also sends a startup message to all of the
+                servers it is connected to in order to let people know they must leave and rejoin
+                voice channels in order for the bot to continue tracking their hours. <br>
+                Finally, a loop is run to re-import all of the custom modules every 1 second.
+                This allows the files to be modified and tested live, without the need to restart
+                the bot.
+            </p>
+            <h2>Time Tracking</h2>
+            <p>
+                Tracking the amount of time users spend in Discord voice calls was the primary intention
+                for creating TimeBot. Over the years of development of the bot, the exact way this information
+                is collected has changed a lot.<br>
+                For starters, a second log file has been added in addition to the first.  The second file
+                was added to store more information as well as to present it in a more user friendly manner.
+                Regardless the fundamental aspect of how this function works has stayed the same.<br>
+                Whenever a user joins or leaves a voice call that the bot is able to access, the bot triggers
+                the on_voice_state_update() function.  This function first determines if the user joined or
+                left the voice channel. If they just joined, the bot creates a file within a folder with the
+                current time. Data is organized within the folder structure '/UserData/{username}/' and
+                every user folder has the same files within it. If the user just left a voice channel, the bot
+                opens the file that was created when the joined the call, subtracts that time from the current
+                time, and adds the log within the csv file.
+            </p>
+            <h2>Conclusion</h2>
+            <p>
+                There is a lot more to this bot than currently mentioned within this write-up.
+                Unfortunately, I created this program way before I created this website and before
+                I learned proper documentation.  Therefore I will attempt to slowly add sections to
+                this write up.  However, the purpose of this writeup is more to show off a random old
+                project than anything else.  As of September, 2022, I moved to university and can no
+                longer continue hosting TimeBot on my own server, therefore it seems as he is gone.
+                If you wish to host TimeBot for yourself, or are planning on making a similar bot,
+                TimeBot's Code will always be available on my github. <br><br><a href="">jchisholm204/jchisholm/Discord Bots/TimeBot - Rewrite</a>
+            </p>
         </div>
     </div>
     <footer>© Jacob Chisholm, 2022</footer>
