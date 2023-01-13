@@ -4,7 +4,7 @@ const path = require('path');
 const router = express.Router();
 const device = require("express-device");
 
-const hostname = '192.168.86.2'
+const hostname = 'localhost'
 const port = 80;
 
 router.use(express.static(__dirname + '/public'));
