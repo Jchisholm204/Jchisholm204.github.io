@@ -30,7 +30,7 @@ function windowResize(){
         sidebar.style.justifyContent = 'space-between';
         sidebar.style.width = '100%';
         //sidebar.style.minWidth = '600px';
-        sidebar.style.height = 'calc(285px - 6vw)';
+        sidebar.style.height = '';//'calc(285px - 6vw)';
         sidebar.style.flexDirection = 'column';
 
         content.style.marginLeft = '5px';
