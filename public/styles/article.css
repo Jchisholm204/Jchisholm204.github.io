@@ -88,6 +88,8 @@ body{
 .paragraph p{
     padding: 0px;
     margin: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 footer{
