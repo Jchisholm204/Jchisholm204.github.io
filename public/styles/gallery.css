@@ -1,3 +1,7 @@
+.gallery{
+    padding: 10px;
+}
+
 .gallery img {
     border-radius: 8px;
     height: auto;

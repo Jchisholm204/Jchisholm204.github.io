@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Vex Robotics 2020-21 Robot</title>
+    <link rel="shortcut icon" href="../assets/favicon.ico?" />
+    <link href="../styles/article_header.css" rel="stylesheet" />
+    <link href="../styles/article.css" rel="stylesheet" />
+    <link href="../styles/gallery.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles/github-dark.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body id="body">
+    <script src="../scripts/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <aside id="topbar">
+        <a id="topbar-header" href="../index.html">
+            <img src="../assets/jc_boc.png" alt="JClogo" id="jc_logo" />
+        </a>
+        <ul id="contact">
+            <li id="github">
+                <a href="http://github.com/jchisholm204">
+                    <img src="../assets/GitHub.png" alt="git" />
+                </a>
+            </li>
+            <li id="linkedin">
+                <a href="https://www.linkedin.com/in/jacob-chisholm-a2a007253/">
+                    <img src="../assets/linkedin.png" alt="linkedin" />
+                </a>
+            </li>
+            <li id="email">
+                <a href="mailto:jacobchisholm1010@gmail.com">
+                    <img src="../assets/mail.png" alt="mail" />
+                </a>
+            </li>
+            <li id="instagram">
+                <a href="https://www.instagram.com/jchisholm204/">
+                    <img src="../assets/instagram.jpg" alt="insta" />
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <div id="top-img" class="headline" style="background-image: url(../assets/vex/robot_top.jpg)">
+        <div class="container">
+            <h1>VEX Robotics: 2020-2021</h1>
+        </div>
+    </div>
+    <div id="page-content">
+        <div class="paragraph">
+            <h2>About</h2>
+            <p>
+                It was no secret that the 2022 VEX game was one of the worst games produced while I was competing.
+                Rather than dwell on the losses, our team decided to use the opportunity to learn new things and
+                play around with sensors.
+                <br/>
+                Below is a collection of things I did this season that I thought were pretty cool.
+            </p>
+        </div>
+        <div class="paragraph">
+            <h2>Ratcheting Intake Mechanism</h2>
+            <p>
+                In order to meet the sizing requirements for VEX, a lot of teams employed some sort of expansion mechanism
+                to allow them to take full advantage of the expansion rules with their robot design. One design that we another
+                team use was a ratcheting mechanism that would deploy the intake when run in reverse and intake normally when
+                driven forwards. This design was very cool, however it came with many downsides including being large, hard to
+                implement, and poor consistency. <br/> Our team really liked the idea behind this design, so we decided to
+                look into similar ways to achieve the same functionality. <br/> I eventually came up with the following design
+                that utilizes a slip gear, pinion and an elastic. When the intake is retracted, the motor can run in forwards
+                to deploy the intake. Once the intake reaches the deployed position, the pinion slips on the slip gear while
+                intaking game objects. The elastic holds the pinion to the slip gear, allowing the motor to spin in reverse
+                and retract the intake.
+            </p>
+            <div class="gallery">
+            <video controls style="max-width: 100%; border-radius: 4px;">
+                <source src="../assets/vex/intake.mp4" type="video/mp4">
+                Your browser does not support the video tag.<br/><br/>
+                This is a video of the intake deploying and retracting.
+            </video>
+            </div>
+            <p>
+                The elastic was eventually replaced by a standoff held on by a cut bushing.
+            </p>
+            <div class="gallery row">
+                <img src="../assets/vex/intake_top_markedup.png" width="100%">
+                <video controls style="max-width: 100%; border-radius: 4px;">
+                    <source src="../assets/vex/intake_closeup.mp4" type="video/mp4">
+                    Your browser does not support the video tag.<br/><br/>
+                    This is a video of the intake deploying and retracting.
+                </video>
+            </div>
+        </div>
+        <div class="paragraph">
+            <h2>Lidar Alignment</h2>
+            <p>
+                One of the other things I did this year was write a PID algorithm to use two lidar sensors to line the robot
+                up with the corner goals during the autonomous period. Below is a few videos of the robot and the code.
+                The first video shows the robot with an untuned PID. The other two show the robot with a tuned PID. In the
+                third video, the reaction of the robot to being pushed is shown.
+            </p>
+        </div>
+        <div class="gallery row">
+            <video controls style="max-width: 100%; border-radius: 4px;">
+                <source src="../assets/vex/align_attempt1.mp4" type="video/mp4">
+                Your browser does not support the video tag.<br/><br/>
+            </video>
+            <video controls style="max-width: 100%; border-radius: 4px;">
+                <source src="../assets/vex/align_attempt2.mp4" type="video/mp4">
+                Your browser does not support the video tag.<br/><br/>
+            </video>
+            <video controls style="max-width: 100%; border-radius: 4px;">
+                <source src="../assets/vex/align_kicktest.mp4" type="video/mp4">
+                Your browser does not support the video tag.<br/><br/>
+            </video>
+        </div>
+<pre><code class="language-cpp">
+void Chassis::twrAlign(int timeout, int leftTarg, int rightTarg){//jk :)
+    int diffErrR, diffErrL;
+    int startMillis = pros::millis();
+
+    float KP = 0.8;
+    float KD = 1.2;
+    int errL = 0; //error value init
+    int derrL = 0;//error difference
+    int err_lastL = 0; //last error
+    int err_sumL = 0; //sum of errors
+    float pL; //p value normally 0.8
+    float dL; //d value normally 0.7
+
+    int errR = 0; //error value init
+    int derrR = 0;//error difference
+    int err_lastR = 0; //last error
+    int err_sumR = 0; //sum of errors
+    float pR; //p value normally 0.8
+    float dR; //d value normally 0.7
+
+    int dPowL, dPowR;
+
+    while((pros::millis()-startMillis) < timeout){
+
+        errL = lLDR.get() - leftTarg;
+        err_lastL = errL; 
+        derrL = (errL - err_lastL); 
+        pL = (KP * errL); 
+        err_sumL += errL;
+        dL = KD * derrL;
+
+        errR = rLDR.get() - rightTarg;
+        err_lastR = errR; 
+        derrR = (errR - err_lastR); 
+        pR = (KP * errR); 
+        err_sumL += errR;
+        dR = KD * derrR;
+
+        dPowL = (pL+dL);
+        dPowR = (pR+dR);
+
+        diffErrR = (errL/errR)/2;
+        diffErrL = (errR/errL)/2;
+
+        //dPowL = (dPowL > 90 ? 90 : dPowL < -90 ? -90 : dPowL);
+        //dPowR = (dPowR > 90 ? 90 : dPowR < -90 ? -90 : dPowR);
+        if(dPowL > 80){dPowL=80;};
+        if(dPowL < -80){dPowL=-80;};
+        if(dPowR > 80){dPowR=80;};
+        if(dPowR < -80){dPowR=-80;};
+
+
+        driveRF.move(dPowR);
+        driveLB.move(dPowL);
+        driveRB.move(dPowR);
+        driveLF.move(dPowL);
+
+    }
+}
+</code></pre>
+
+<pre><code class="language-cpp">
+void Chassis::fenceAlign(int timeout){
+    int startMillis = pros::millis();
+
+    float KP = 0.7;
+    float KD = 1.2;
+    int err = 0; //error value init
+    int derr = 0;//error difference
+    int err_last = 0; //last error
+    int err_sum = 0; //sum of errors
+    float p; //p value normally 0.8
+    float d; //d value normally 0.7
+    int dPow;
+
+    while((pros::millis()-startMillis) < timeout){
+
+        err = rbLDR.get() - lbLDR.get();
+        err_last = err; 
+        derr = (err - err_last); 
+        p = (KP * err); 
+        err_sum += err;
+        d = KD * derr;
+
+        dPow = (p+d);
+
+        //dPow = (dPow > 100 ? 100 : dPow < -100 ? -100 : dPow);
+        if(dPow > 127){dPow=127;};
+        if(dPow < -127){dPow=-127;};
+
+
+        driveRF.move(dPow);
+            driveLB.move(-dPow);
+            driveRB.move(dPow);
+            driveLF.move(-dPow);
+    }
+}
+</code></pre>
+    </div>
+    <footer>&copy; Jacob Chisholm, 2022</footer>
+</body>
+</html>

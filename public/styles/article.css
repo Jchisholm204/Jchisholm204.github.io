@@ -80,7 +80,7 @@ body{
 
 .paragraph h2{
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     margin: 0px;
     color: black;
 }
@@ -88,8 +88,8 @@ body{
 .paragraph p{
     padding: 0px;
     margin: 0px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 footer{

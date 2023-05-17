@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="../assets/favicon.ico?" />
     <link href="../styles/article_header.css" rel="stylesheet" />
     <link href="../styles/article.css" rel="stylesheet" />
+    <link href="../styles/gallery.css" rel="stylesheet" />
     <link rel="stylesheet" href="../styles/github-dark.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
@@ -72,18 +73,24 @@
                 with these sensors is although they did have a digital output, the “LOW” signal was too high for the RoboRio’s (main microcontroller aboard the robot) threshold resulting in a constant
                 “HIGH” read. This was fixed by tying a 10.2kΩ resistor between the signal and ground to drop the voltage down to a readable level.
             </p>
-            <image src="../assets/frc/20220309_171003.jpg" style="width: 60%; height: auto; margin-left: 15%; margin-right: auto; border-radius: 5px;"></image>
+            <div class="gallery column">
+            <img src="../assets/frc/20220309_171003.jpg" style="width: 60%; height: auto; margin-left: 15%; margin-right: auto;"/>
+            </div>
             <p>
                 We ran these sensors at the Victoria Regional with minimal issues but decided to keep exploring other options to minimize faults. Eventually, we settled on using the REV Robotics V2 Color Sensors.
                 We already had one on the robot for color sorting and their IR proximity sensor made detecting the balls a lot more consistent, regardless of color.
             </p>
+            <div class="gallery column">
             <image src="../assets/frc/revv2_on_robot.jpg" style="width: 60%; height: auto; margin-left: 15%; margin-right: auto; border-radius: 5px;"></image>
+            </div>
             <p>
                 These sensors were not without their issues either though. Because of their fixed I2C addresses, there would be address conflicts when putting them on the same bus. While the RoboRio does come with
                 two I2C buses, one of the buses caused frequent system lockups preventing it from being used. Therefore, a Raspberry Pi was used to add a second I2C bus to the system. The Raspberry Pi used Network
                 Tables to communicate with the RoboRio.
             </p>
+            <div class="gallery column">
             <image src="../assets/frc/pi_wiring.jpg" style="width: 60%; height: auto; margin-left: 15%; margin-right: auto; border-radius: 5px;"></image>
+            </div>
             <p>
                 After extensive testing both in preparation for and during the world championship tournament, the REV V2 Color sensors held up extremely well and proved to be a
                 reliable option for detecting balls in the indexing system. It would be my recommendation to use these sensors in the future when trying to detect objects of varying color. Otherwise, the red light
