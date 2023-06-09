@@ -1,0 +1,373 @@
+%-------------------------
+% Resume in Latex
+% Author
+% License : MIT
+%------------------------
+
+%---- Required Packages and Functions ----
+
+\documentclass[a4paper,11pt]{article}
+\usepackage{latexsym}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{ragged2e}
+\usepackage[empty]{fullpage}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{marvosym}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{cfr-lm}
+\usepackage[T1]{fontenc}
+\setlength{\multicolsep}{0pt} 
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\geometry{left=1.4cm, top=0.8cm, right=1.2cm, bottom=1cm}
+% Adjust margins
+%\addtolength{\oddsidemargin}{-0.5in}
+%\addtolength{\evensidemargin}{-0.5in}
+%\addtolength{\textwidth}{1in}
+\usepackage[most]{tcolorbox}
+\tcbset{
+	frame code={}
+	center title,
+	left=0pt,
+	right=0pt,
+	top=0pt,
+	bottom=0pt,
+	colback=gray!20,
+	colframe=white,
+	width=\dimexpr\textwidth\relax,
+	enlarge left by=-2mm,
+	boxsep=4pt,
+	arc=0pt,outer arc=0pt,
+}
+
+\urlstyle{same}
+
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-7pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item{
+    \textbf{#1}{\hspace{0.5mm}#2 \vspace{-0.5mm}}
+  }
+}
+
+\newcommand{\resumePOR}[3]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1}\hspace{0.3mm}#2 & \textit{\small{#3}} 
+    \end{tabular*}
+    \vspace{-2mm}
+}
+
+\newcommand{\resumeSubheading}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#4}} \\
+        \textit{\footnotesize{#3}} &  \footnotesize{#2}\\
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeProject}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#3}} \\
+        \footnotesize{\textit{#2}} & \footnotesize{#4}
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+% \renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemi}{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*,labelsep=0mm]}
+\newcommand{\resumeHeadingSkillStart}{\begin{itemize}[leftmargin=*,itemsep=1.7mm, rightmargin=2ex]}
+\newcommand{\resumeItemListStart}{\begin{justify}\begin{itemize}[leftmargin=3ex, rightmargin=2ex, noitemsep,labelsep=1.2mm,itemsep=0mm]\small}
+
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}\vspace{2mm}}
+\newcommand{\resumeHeadingSkillEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\end{justify}\vspace{-2mm}}
+\newcommand{\cvsection}[1]{%
+\vspace{2mm}
+\begin{tcolorbox}
+    \textbf{\large #1}
+\end{tcolorbox}
+    \vspace{-4mm}
+}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}%
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
+\newcolumntype{C}{>{\centering\arraybackslash}X}%
+%---- End of Packages and Functions ------
+
+%-------------------------------------------
+%%%%%%  CV STARTS HERE  %%%%%%%%%%%
+%%%%%% DEFINE ELEMENTS HERE %%%%%%%
+\newcommand{\name}{Jacob Chisholm} % Your Name
+\newcommand{\course}{Computer Enginnering} % Your Program
+\newcommand{\roll}{xxxxxxx} % Your Roll No.
+\newcommand{\phone}{604-313-0575} % Your Phone Number
+\newcommand{\emaila}{Jacobchisholm1010@gmail.com} %Email 1
+\newcommand{\emailb}{chisholm.jacob@queensu.ca} %Email 2
+
+
+
+
+\begin{document}
+\fontfamily{cmr}\selectfont
+%----------HEADING-----------------
+
+
+\parbox{2.35cm}{%
+\href{https://jchisholm204.github.io/index.html}{
+\includegraphics[width=2cm,clip]{jc_boc.png}
+}}
+\parbox{\dimexpr\linewidth-2.8cm\relax}{
+\begin{tabularx}{\linewidth}{L r} \\
+  \textbf{\Large \name} & {\raisebox{0.0\height}{\footnotesize \faPhone}\ +1-\phone}\\
+  {Computer Engineering (ECEi)} & \href{mailto:\emaila}{\raisebox{0.0\height}{\footnotesize \faEnvelope}\ {\emaila}} \\
+  {Queen's University} &  \href{mailto:\emailb}{\raisebox{0.0\height}{\footnotesize \faEnvelope}\ {\emailb}}\\
+  {} & \href{https://www.linkedin.com/in/jchisholm204/}{\raisebox{0.0\height}{\footnotesize \faLinkedin}\ {LinkedIn Profile}} \\
+  {} &  \href{https://github.com/Jchisholm204}{\raisebox{0.0\height}{\footnotesize \faGithub}\ {GitHub Profile}}
+\end{tabularx}
+}
+% \parbox{3.0cm}{%
+% \flushright \includegraphics[width=2cm,clip]{nitp_logo.png}
+% }
+
+
+
+
+%-----------EDUCATION-----------
+\section{\textbf{Education}}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      { Queen's University, Kingston ON}{}
+      {Computer Engineering Innovation Stream (ECEi)}{2026}
+    \resumeSubheading
+      { Rockridge Secondary School}{Percentage: 94\%}
+      {High School}{2022}
+  \resumeSubHeadingListEnd
+\vspace{-5.5mm}
+%
+
+
+
+%-----------EXPERIENCE-----------------
+\section{\textbf{Experience}}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      { ThunderBird Marine}{West Vancouver, BC}
+      {Yard Work Employee}{2022-Current}
+      \vspace{-2.0mm}
+      \resumeItemListStart
+    \item {25MT Marine Travel Lift Operation}
+    \item {Forklift Operation}
+    \item {Sea Tows (up to 45 ft boats)}
+    \item {Lifting / Launching Boats}
+    \item {Trailer Towing / Relocation}
+    \resumeItemListEnd
+    
+    \vspace{-3.0mm}
+    
+    \resumeSubheading
+      { Trolls Resturaunt}{West Vancouver, BC}
+      {Back House Employee}{2019-2021}
+      \vspace{-2.0mm}
+      \resumeItemListStart
+    \item {Dish Washing}
+    \item {Prep Cook}
+    \item {Line Cook}
+    \resumeItemListEnd
+      
+  \resumeSubHeadingListEnd
+\vspace{-8.5mm}
+
+
+
+%-----------PROJECTS-----------------
+\section{\textbf{Recent Projects} {\tiny Project Titles Link to Portfolio Entries}}
+\resumeSubHeadingListStart
+
+    \resumeProject
+      { FPGA Pong Game} %Project Name
+      {The all classic "Pong" written in VHDL and running on a Cyclone II FPGA.} %Project Name, Location Name
+      {2023} %Event Dates
+
+    \resumeItemListStart
+        \item {Tools \& technologies used: VHDL, ModelSim, Altera Quartus, Cyclone II DE2 Development Board, DAC, VGA}
+        \item {A fully functional pong game running off of a Cyclone II FPGA through a VGA output and button input.}
+    \resumeItemListEnd
+    \vspace{-2mm}
+
+    \resumeProject
+      {\href{https://jchisholm204.github.io/pages/vhdl_8bitdipswitch.html}{ FPGA Numerical Display}} %Project Name
+      {Displaying an 8 bit binary number in decimal format on three seven segment displays} %Project Name, Location Name
+      {2023} %Event Dates
+
+    \resumeItemListStart
+        \item {Tools \& technologies used: VHDL, ModelSim, Altera Quartus, Cyclone II DE2 Development Board}
+    \resumeItemListEnd
+    \vspace{-2mm}
+
+    \resumeProject
+      {\href{https://jchisholm204.github.io/}{ Personal Portfolio}} %Project Name
+      {Built a website to house all of my personal projects} %Project Name, Location Name
+      {2023} %Event Dates
+
+      \resumeItemListStart
+        \item {Tools \& technologies used: CSS, HTML, JavaScript, VSCode, Github Pages, NodeJS}
+        \item {This is a static site hosted by Github pages that I use to demonstrate my learning through various personal projects. The website itself is also a personal project and I learned all of the languages and tools needed to build it in under 12 hours. }
+    \resumeItemListEnd
+    \vspace{-2mm}
+
+    \resumeProject
+      {\href{https://jchisholm204.github.io/pages/fsae_cal.html}{ CAL}} %Project Name
+      {CAN Abstraction Layer (CAL) built for MoTeC M150 ECU and PDM15} %Project Name, Location Name
+      {2023} %Event Dates
+
+      \resumeItemListStart
+        \item {Tools \& technologies used: C++, PlatformIO, STM32, Arduino}
+        \item {A library for easily receiving and decoding CAN messages from the MoTeC M150 ECU and PDM 15}
+        \item {Designed in conjunction with Ethan Peterson's STM32 CAN Bus library}
+        \item {Published on the \href{https://registry.platformio.org/libraries/jchisholm204/cal}{PlatformIO Library Registry}}
+    \resumeItemListEnd
+    \vspace{-2mm}
+
+    \resumeProject
+      { First Robotics Programming} %Project Name
+      {All of the code required to run a competitive robot} %Project Name, Location Name
+      {2022} %Event Dates
+
+    \resumeItemListStart
+        \item {Tools \& technologies used: C++, Gradle, VSCode, WPILib, Java, FRC RoboRio}
+        \item {Wrote all autonomous and driver control functions within a command based program for the 2022 robot. Check out the code \href{https://github.com/Jchisholm204/Ten-Ton-FRC-2022/tree/main/6364%20Worlds}{here}.}
+        \item{2022 FRC World Championship Competitor}
+    \resumeItemListEnd
+    \vspace{-2mm}
+
+    \resumeProject
+      {\href{https://jchisholm204.github.io/pages/frc_electrical.html}{ First Robotics Electrical System}} %Project Name
+      {Designed and implemented the wiring for the 2022 FRC robot} %Project Name, Location Name
+      {2022} %Event Dates
+
+    \resumeItemListStart
+        \item {Tools \& technologies used: Ferrule / Molex / AndyMark PowerPole / JST-XH / Dupont Crimps, CAN Bus Wiring}
+        \item {Designed the wiring harnesses for the 2022 robot. Check out the project on my \href{https://jchisholm204.github.io/pages/frc_electrical.html}{portfolio}.}
+        \item{2022 FRC World Championship Competitor}
+    \resumeItemListEnd
+    \vspace{-2mm}
+
+
+  \resumeSubHeadingListEnd
+\vspace{-5.5mm}
+
+
+
+%-----------Technical skills-----------------
+\section{\textbf{Technical Skills and Interests}}
+ \begin{itemize}[leftmargin=0.05in, label={}]
+    \small{\item{
+     \textbf{Languages}{: C, C++, Java, Python, GCODE, GNU COBOL, JavaScript, HTML, CSS, VHDL} \\
+     \vspace{1mm}
+     \textbf{Developer Tools}{: VSCode, VIM, ModelSim, Git, GitHub, PlatformIO, STMLink, STM Utility, Arduino} \\
+     \vspace{1mm}
+     \textbf{Hardware}{: STM32, CAN Bus, VGA, Fusion 360, SolidWorks, Oscilloscope Operation, Soldering, ESP32} \\
+     \vspace{1mm}
+     \textbf{Areas of Interest}{: HDL Programming, Autonomous Robotics, FPGAs/ASICs, Embedded Systems \& Software Engineering, Communications Systems, Computer Sensing Technologies} \\
+     \vspace{1mm}
+     \textbf{Office Software}{: Word, Powerpoint, Excel, OneNote and \LaTeX} \\
+     \vspace{1mm}
+     \textbf{Certifications}{: Forklift, Pleasure Craft, CPR C, Bronze Cross Life Guarding, WHMIS (Workplace Hazardous Materials Information System)}
+    }}
+ \end{itemize}
+ \vspace{-16pt}
+
+
+
+%-----------Positions of Responsibility-----------------
+\section{\textbf{Positions of Responsibility}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+\resumePOR{ Electrical Team Lead, } % Position
+    {Queen's University Formula Team} %Club,Event
+    {2023-Ongoing} %Tenure Period
+\resumePOR{ Electrical Team Lead, } % Position
+    {Ten Ton Robotics First Robotics Competition Team} %Club,Event
+    {2021-2022} %Tenure Period
+\resumePOR{ Programming Team Lead, } % Position
+    {Ten Ton Robotics First Robotics Competition Team} %Club,Event
+    {2021-2022} %Tenure Period
+\resumePOR{ Pnumatics Team Lead, } % Position
+    {Ten Ton Robotics First Robotics Competition Team} %Club,Event
+    {2021-2022} %Tenure Period
+\resumePOR{ Troop Leader, } % Position
+    {Scouts Canada} %Club,Event
+    {2018-2021} %Tenure Period
+\resumeSubHeadingListEnd
+\vspace{-5mm}
+
+
+
+
+%-----------Achievements-----------------
+\section{\textbf{Achievements}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+\resumePOR{ Deans List } % Award
+    {Queen's University} % Event
+    {2022} %Event Year
+
+\resumePOR{ FRC Excellence in Engineering Award } % Award
+    {Awarded for Ball Indexing Algorithm} % Event
+    {2019-2021} %Event Year
+
+\resumePOR{ Honour Roll (with distinction) } % Award
+    {Rockridge Secondary} % Event
+    {2017-2022} %Event Year
+
+\resumePOR{ Best Speaker } % Award
+    {WV School District Debate Tournament} % Event
+    {2021} %Event Year
+
+\resumePOR{ Tournament Champion } % Award
+    {WV School District Debate Tournament} % Event
+    {2021} %Event Year
+
+\resumePOR{ VEX Robotics Awards: } % Award
+    {Create, Think, Build and Amaze Recipient} % Event
+    {2018-2021} %Event Year
+    
+\resumePOR{ Chief Scouts Award } % Award
+    {Awarded to Scouts for leadership and world conservation efforts} % Event
+    {2018} %Event Year
+\resumeSubHeadingListEnd
+\vspace{-5mm}
+
+
+
+%-------------------------------------------
+\end{document}
