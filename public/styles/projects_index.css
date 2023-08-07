@@ -1,0 +1,130 @@
+*{
+    margin:0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F5F5F5;
+}
+
+
+/*Sidebar*/
+
+#sidebar footer img{
+    height: 20px;
+    width:auto;
+}
+#sidebar{
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    width: 240px;
+    height: 100%;
+    flex-direction:column;
+    background-color: #FFFFFF;
+    padding: 20px;
+    text-align: center;
+}
+
+#auth{
+    text-align:center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid black;
+}
+
+#auth img {
+    height: 60px;
+    width: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
+
+footer{
+    text-align: center;
+}
+
+.info h4{
+    width: 80%;
+    border-bottom: 1px solid black;
+    line-height: 0.1em;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 5px;
+}
+.info h4 span{
+    background: white;
+    padding: 8px;
+}
+
+.info ul{
+    display: inline-flex;
+    list-style: none;
+    padding: 0px;
+}
+.info li{
+    padding: 10px;
+    transition: 120ms ease-in-out;
+}
+.info li:hover{
+    transform: scale(1.08);
+}
+
+.posts{
+    display: grid;
+    row-gap: 10px;
+    margin-left: 245px;
+}
+
+.article{
+    display: flex;
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 0px;
+    /*min-width: 400px;*/
+    max-width: 900px;
+    height: 100%;
+    width: auto;
+    overflow: hidden;
+    transition: 200ms ease-in-out;
+}
+.article:hover {
+    transform: translate(-2px, -2px);
+}
+
+.article:hover .article-img{
+    transform: scale(1.03);
+}
+
+.article-img {
+    transition: 200ms ease-in-out;
+    transform: scale(1);
+    width: 45%;
+    height: 100%;
+    min-height: 11rem;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+}
+.article-content{
+    width: 100%;
+    margin: 10px 20px 5px 20px;
+    display: flex;
+    text-decoration: inherit;
+    flex-direction: column;
+    justify-content: space-between;
+    color: inherit;
+}
+
+.article-content .date{
+    width: 100%;
+    text-align: right;
+}
+.article-title{
+    padding-bottom: 10px;
+}

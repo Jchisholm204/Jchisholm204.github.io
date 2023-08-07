@@ -1,0 +1,65 @@
+html{
+    min-height: 100vh;
+    margin: 0 auto;
+    background: 
+    radial-gradient(rgb(200, 200, 255), white);
+}
+
+body{
+    color: black;
+    height: 80vh;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    height: 60px;
+    padding: 20px;
+}
+
+header #home_button{
+    height: 100%;
+    padding-left: 20px;
+
+}
+
+header #home_button img{
+    height: 100%;
+    width: auto;
+}
+
+header #nav_bar{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 25px
+}
+
+header #nav_bar a{
+    color: black;
+    font-family: 'Courier New', Courier, monospace;
+    transition: 300ms ease-in-out;
+    text-decoration: none;
+    padding: 20px;
+}
+
+header #nav_bar a:hover{
+    transform: scale(1.125);
+    text-underline-offset: 8px;
+    text-decoration: underline;
+}
+#page-content{
+    height: 100%;
+    font-family: sans-serif;
+    padding: 40px;
+    padding-top: 0px;
+    margin: auto;
+    max-width: 800px;
+    justify-self: center;
+}
+
+#page-content #linkedin{
+    width: 100%;
+    height: auto;
+    border: none;
+    border-radius: 15px;
+}
