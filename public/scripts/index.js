@@ -20,6 +20,7 @@ function windowResize(){
     const header = document.getElementById("sidebar-header");
     const footer = document.getElementById("sidebar-footer");
     const authAbout = document.getElementById("auth-about");
+    const copyright = document.getElementById("copyright");
     //const article = document.getElementsByName("article");
 
     if(window.innerWidth < 900 || deviceType === "mobile"){
@@ -34,6 +35,7 @@ function windowResize(){
         sidebar.style.flexDirection = 'column';
 
         content.style.marginLeft = '5px';
+        copyright.style.paddingLeft = '0px';
     }
     else{
         contactHeader.style.visibility = 'visible';
@@ -46,6 +48,7 @@ function windowResize(){
         sidebar.style.flexDirection = 'column';
 
         content.style.marginLeft = '245px';
+        copyright.style.paddingLeft = '240px';
     }
 }
 
