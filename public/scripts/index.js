@@ -16,36 +16,26 @@ function windowResize(){
 
     const sidebar = document.getElementById("sidebar");
     const content = document.getElementById("page-content");
-    const contactHeader = document.getElementById("contact-header");
-    const header = document.getElementById("sidebar-header");
-    const footer = document.getElementById("sidebar-footer");
-    const authAbout = document.getElementById("auth-about");
+    const header = document.getElementById("header");
     const copyright = document.getElementById("copyright");
     //const article = document.getElementsByName("article");
 
     if(window.innerWidth < 900 || deviceType === "mobile"){
-        contactHeader.style.visibility = 'hidden';
-        authAbout.style.textAlign = 'center';
+        sidebar.style.display = 'none';
+        sidebar.style.visibility = 'hidden'
 
-        sidebar.style.position = 'static';
-        sidebar.style.justifyContent = 'space-between';
-        sidebar.style.width = '100%';
-        //sidebar.style.minWidth = '600px';
-        sidebar.style.height = '';//'calc(285px - 6vw)';
-        sidebar.style.flexDirection = 'column';
+        header.style.display = 'flex';
+        header.style.visibility = 'visible';
 
         content.style.marginLeft = '5px';
         copyright.style.paddingLeft = '0px';
     }
     else{
-        contactHeader.style.visibility = 'visible';
+        sidebar.style.display = 'flex';
+        sidebar.style.visibility = 'visible'
 
-        sidebar.style.position = 'fixed';
-        sidebar.style.justifyContent = 'space-between';
-        sidebar.style.width = '240px';
-        sidebar.style.minWidth = '0px';
-        sidebar.style.height = '100%';
-        sidebar.style.flexDirection = 'column';
+        header.style.display = 'none';
+        header.style.visibility = 'hidden';
 
         content.style.marginLeft = '245px';
         copyright.style.paddingLeft = '240px';

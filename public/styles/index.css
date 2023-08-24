@@ -84,6 +84,39 @@ footer{
     transform: scale(1.08);
 }
 
+#header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    height: 60px;
+    width: 100%;
+    background-color: white;
+}
+
+#header img{
+    height: 40px;
+    margin: 10px;
+}
+#header ul{
+    list-style-type: none;
+    justify-content: center;
+    margin-top:auto;
+    margin-bottom: auto;
+    padding-right: 20px;
+    padding-left: 0px;
+
+}
+
+#header ul li{
+    display: inline;
+    padding-left: 10px
+}
+#header ul li a{
+    text-decoration: none;
+    color: black;
+}
+
 .posts{
     display: grid;
     row-gap: 10px;
