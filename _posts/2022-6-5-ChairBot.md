@@ -12,8 +12,8 @@ image:
 
 While building the 2022 World Championship robot, we decided to take a break and have some fun by making an FRC GoKart. Powered by two old NEO motors and a half broken RoboRio, the Kart actually worked much better than expected. Since the code is nothing but some simple drive code and the physical Kart was janked together within the span of an hour, this page is simply a place where I can put up some pictures and a video to remember this fun day.
 
-![](/assets/frc/chairbot/chairbot_20220409_170705.jpg)
-![](/assets/frc/chairbot/chairbot_20220409_170709.jpg)
+<img src="/assets/frc/chairbot/chairbot_20220409_170705.jpg" style="max-width: 50%;"/>
+<img src="/assets/frc/chairbot/chairbot_20220409_170709.jpg" style="max-width: 50%;"/>
 
 
 {:refdef: style="text-align: center;"}
