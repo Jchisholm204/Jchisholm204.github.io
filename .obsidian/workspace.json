@@ -148,8 +148,28 @@
   },
   "active": "cc79364d2537e19e",
   "lastOpenFiles": [
+    "_site/about/index.html",
+    "_site/archives/index.html",
+    "_site/tags/index.html",
+    "_site/categories/index.html",
+    "_site/posts/baremetal_blink/index.html",
+    "_site/posts/vhdlPong/index.html",
+    "_site/posts/vhdlPong",
+    "_site/assets/js/dist/post.min.js",
+    "_site/assets/js/dist/page.min.js",
+    "_site/assets/js/dist/misc.min.js",
+    "_site/assets/js/dist/home.min.js",
+    "_site/assets/vex/robot_top.jpg",
+    "_site/assets/vex/robot_front.jpg",
+    "_site/assets/vex/logo_pros.png",
+    "_site/assets/vex/intake_top_markedup.png",
+    "_site/assets/vex/intake_top.png",
+    "_site/assets/timebot/output_timebot.png",
+    "_site/assets/timebot/output_time.png",
+    "_site/assets/timebot/output_status.png",
+    "_site/assets/timebot/output_scoreboard.png",
+    "_site/assets/timebot/output_rm.png",
     "_posts/2023-8-30-baremetal_blink.md",
-    "_posts/2023-4-26-vhdlPong.md",
-    "assets/fpga/8bit_vhdl/ModelSim_Waveform.png"
+    "_posts/2023-4-26-vhdlPong.md"
   ]
 }
