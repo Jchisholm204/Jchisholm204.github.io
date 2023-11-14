@@ -1,5 +1,5 @@
 ---
-title: FRC Chair Bot"
+title: FRC Chair Bot
 date: 2022-6-5
 categories: [FRC/VEX Robotics]
 tags: [wiring]
