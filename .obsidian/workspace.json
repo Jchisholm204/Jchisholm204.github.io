@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2023-1-2-fsaecal.md",
+                "file": "_posts/2023-10-30-stm32_cmake.md",
                 "mode": "source",
                 "source": false
               }
@@ -48,7 +48,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "isnt",
+                "query": "tag:Cyclone",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "_posts/2023-1-2-fsaecal.md",
+                "file": "_posts/2023-10-30-stm32_cmake.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "_posts/2023-1-2-fsaecal.md",
+                "file": "_posts/2023-10-30-stm32_cmake.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "_posts/2023-1-2-fsaecal.md"
+                "file": "_posts/2023-10-30-stm32_cmake.md"
               }
             }
           }
@@ -143,11 +143,19 @@
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
-      "command-palette:Open command palette": false
+      "command-palette:Open command palette": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
   "active": "cc79364d2537e19e",
   "lastOpenFiles": [
+    "README.md",
+    "README 1.md",
+    "_posts/2023-10-30-stm32_cmake.md",
+    "_posts/2023-10-4-vhdl_debouncer.md",
+    "_posts/2023-4-26-vhdlPong.md",
+    "_posts/2023-8-30-baremetal_blink.md",
+    "_posts/2023-1-2-fsaecal.md",
     "_posts/2022-6-5-ChairBot.md",
     "_site/posts/esp32_7segdisplay/index.html",
     "_site/posts/esp32_7segdisplay",
@@ -162,8 +170,6 @@
     "_posts/2022-12-23-esp32_7segdisplay.mc",
     "_site/posts/vhdl8bitdipswitch/index.html",
     "_posts/2023-2-28-vhdl8bitdipswitch.md",
-    "_posts/2023-1-2-fsaecal.md",
-    "_posts/2023-4-26-vhdlPong.md",
     "_site/assets/vex/robot_top.jpg",
     "_site/assets/vex/robot_front.jpg",
     "_site/assets/vex/logo_pros.png",
@@ -173,7 +179,6 @@
     "_site/assets/timebot/output_time.png",
     "_site/assets/timebot/output_status.png",
     "_site/assets/timebot/output_scoreboard.png",
-    "_site/assets/timebot/output_rm.png",
-    "_posts/2023-8-30-baremetal_blink.md"
+    "_site/assets/timebot/output_rm.png"
   ]
 }
