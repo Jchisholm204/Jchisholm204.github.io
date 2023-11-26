@@ -37,24 +37,25 @@ The first step in writing the UART driver is the hardware abstraction. This sect
 
 ```c
 static inline void hal_uart_init(USART_TypeDef *uart, unsigned long baud) {
-    // figure 19. selecting an alternate function (7=spi2/3, usart1..3, uart5, spdif-in)
-    uint8_t af = 7;           // Alternate function
-    uint16_t rx = 0, tx = 0;  // pins
-    if (uart == USART1) RCC->APB2ENR |= BIT(4);
-    if (uart == USART2) RCC->APB1ENR |= BIT(17);
-    if (uart == USART3) RCC->APB1ENR |= BIT(18);
+  // figure 19. selecting an alternate function (7=spi2/3, usart1..3, uart5, spdif-in)
+  uint8_t af = 7;           // Alternate function
+  uint16_t rx = 0, tx = 0;  // pins
 
-    if (uart == USART1) tx = PIN('A', 9), rx = PIN('A', 10);
-    if (uart == USART2) tx = PIN('A', 2), rx = PIN('A', 3);
-    if (uart == USART3) tx = PIN('D', 8), rx = PIN('D', 9);
-  
-    gpio_set_mode(tx, GPIO_MODE_AF);
-    gpio_set_af(tx, af);
-    gpio_set_mode(rx, GPIO_MODE_AF);
-    gpio_set_af(rx, af);
-    uart->CR1 = 0;                           // Disable this UART
-    uart->BRR = APB1_FREQUENCY / baud;                 // FREQ is a UART bus frequency
-    uart->CR1 |= BIT(13) | BIT(2) | BIT(3);  // Set UE, RE, TE
+  if (uart == USART1) RCC->APB2ENR |= BIT(4);
+  if (uart == USART2) RCC->APB1ENR |= BIT(17);
+  if (uart == USART3) RCC->APB1ENR |= BIT(18);
+
+  if (uart == USART1) tx = PIN('A', 9), rx = PIN('A', 10);
+  if (uart == USART2) tx = PIN('A', 2), rx = PIN('A', 3);
+  if (uart == USART3) tx = PIN('D', 8), rx = PIN('D', 9);
+
+  gpio_set_mode(tx, GPIO_MODE_AF);
+  gpio_set_af(tx, af);
+  gpio_set_mode(rx, GPIO_MODE_AF);
+  gpio_set_af(rx, af);
+  uart->CR1 = 0;                           // Disable this UART
+  uart->BRR = APB1_FREQUENCY / baud;                 // FREQ is a UART bus frequency
+  uart->CR1 |= BIT(13) | BIT(2) | BIT(3);  // Set UE, RE, TE
 }
 ```
 
@@ -62,12 +63,13 @@ The next section of the UART hardware driver is the `write_buffer` function. Thi
 
 ```c
 static inline void hal_uart_write_byte(USART_TypeDef * uart, uint8_t byte) {
-    uart->DR = byte;
-    while ((uart->SR & USART_SR_TXE) == 0);
+  uart->DR = byte;
+  while ((uart->SR & USART_SR_TXE) == 0) spin(1);
+    
 }
 
 static inline void hal_uart_write_buf(USART_TypeDef *uart, char *buf, size_t len){
-    while(len-- > 0) hal_uart_write_byte(uart, *(uint8_t *) buf++);
+  while(len-- > 0) hal_uart_write_byte(uart, *(uint8_t *) buf++);
 }
 ```
 
@@ -79,9 +81,9 @@ In order to group UART ports with their respective semaphores, a `uart_t` type d
 
 ```c
 typedef struct uart_t {
-    USART_TypeDef *port;
-    xSemaphoreHandle semaphore;
-    StreamBufferHandle_t rxbuffer;
+  USART_TypeDef *port;
+  xSemaphoreHandle semaphore;
+  StreamBufferHandle_t rxbuffer;
 } uart_t;
 ```
 
@@ -99,11 +101,12 @@ The type definition is externally defined within the `interface_uart.h` file and
  *
  */
 void os_uart_setup(){
-    // Enable the UART 2 port and setup its IQR handler
-    uart_send_init(&port_uart2, USART2, 250000);
-    hal_uart_enable_rxne(port_uart2.port, true);
-    NVIC_SetPriority(USART2_IRQn, (NVIC_Priority_MIN-10));
-    NVIC_EnableIRQ(USART2_IRQn);
+  // Enable the UART 2 port and setup its IQR handler
+  uart_send_init(&port_uart2, USART2, 250000);
+  xSemaphoreGive(port_uart2.semaphore);
+  hal_uart_enable_rxne(port_uart2.port, true);
+  NVIC_SetPriority(USART2_IRQn, (NVIC_Priority_MIN-10));
+  NVIC_EnableIRQ(USART2_IRQn);
 }
 ```
 The primary purpose of having the `os_uart_setup()` function is to reduce clutter within the `main.c` file and allow for more organization in the program structure. As seen above, the setup function first invokes the interface setup function to initialize the hardware, semaphore and stream buffer. The hardware is initialized with a baud rate of 250000. Lower baud rates provide more stability at the cost of transmission speed. Since the test environment contains low electronic noise, the highest possible baud rate was selected. The setup function also enables the UART's receive interrupt and sets it up within the ARM NVIC (Nested Vector Interrupt Controller).
@@ -120,15 +123,15 @@ The interface code provides two methods to write to the UART port. Both are simp
  * @param timeout The amount of ticks to wait for the interface to become available
  */
 static inline int uart_send_buf_blocking(uart_t *port, char* buf, size_t len, TickType_t timeout){
-    if(port == NULL)            return UART_ERR_UNDEF;
-    if(port->port == NULL)      return UART_ERR_UNDEF;
-    if(port->semaphore == NULL) return UART_ERR_UNDEF;
-    if(xSemaphoreTake(port->semaphore, timeout) == pdTRUE){
-        hal_uart_write_buf(port->port, buf, len);
-        xSemaphoreGive(port->semaphore);
-        return UART_WRITE_OK;
-    }
-    return UART_ERR_ACC;
+  if(port == NULL)            return UART_ERR_UNDEF;
+  if(port->port == NULL)      return UART_ERR_UNDEF;
+  if(port->semaphore == NULL) return UART_ERR_UNDEF;
+  if(xSemaphoreTake(port->semaphore, timeout) == pdTRUE){
+    hal_uart_write_buf(port->port, buf, len);
+    xSemaphoreGive(port->semaphore);
+    return UART_WRITE_OK;
+  }
+  return UART_ERR_ACC;
 }
 ```
 
@@ -147,25 +150,25 @@ As seen, not only is the output showing correctly, but it makes debugging signif
 
 ```c
 int _write(int fd, char *ptr, int len) {
-  (void) fd, (void) ptr, (void) len;
-  if (fd == 1 || fd == 2){
-    char * callerID = NULL;
-    // Get the name of the task calling printf - Only run if scheduler has been started
-    if(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) callerID = pcTaskGetName(NULL);
-    if(port_uart2.port == NULL)          return -1;
-    if(port_uart2.semaphore == NULL)     return -1;
-    // Take over the debug usart
-    if(xSemaphoreTake(port_uart2.semaphore, (TickType_t) 10) == pdTRUE){
-      // Write caller ID, followed by ": ", then the argument given to printf
-      if(callerID != NULL){
-        hal_uart_write_buf(port_uart2.port, callerID, strlen(callerID));
-        hal_uart_write_buf(port_uart2.port, ": ", 3);
-      }
-      hal_uart_write_buf(port_uart2.port, ptr, (size_t) len);
-      xSemaphoreGive(port_uart2.semaphore);
-    }
-  } //hal_uart_write_buf(UART_DEBUG, ptr, (size_t) len);
-  return -1;
+  (void) fd, (void) ptr, (void) len;
+  if (fd == 1 || fd == 2){
+    char * callerID = NULL;
+    // Get the name of the task calling printf - Only run if scheduler has been started
+    if(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) callerID = pcTaskGetName(NULL);
+    if(port_uart2.port == NULL)          return -1;
+    if(port_uart2.semaphore == NULL)     return -1;
+    // Take over the debug usart
+    if(xSemaphoreTake(port_uart2.semaphore, (TickType_t) 10) == pdTRUE){
+      // Write caller ID, followed by ": ", then the argument given to printf
+      if(callerID != NULL){
+        hal_uart_write_buf(port_uart2.port, callerID, strlen(callerID));
+        hal_uart_write_buf(port_uart2.port, ": ", 3);
+      }
+      hal_uart_write_buf(port_uart2.port, ptr, (size_t) len);
+      xSemaphoreGive(port_uart2.semaphore);
+    }
+  } //hal_uart_write_buf(UART_DEBUG, ptr, (size_t) len);
+  return -1;
 }
 ```
 
@@ -174,16 +177,19 @@ The final component of the interface is the UART interrupt handler. Every UART i
 
 ```c
 void USART2_IRQHandler(){
-    // Initialize variable to trigger context switch to false (no context switch)
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    // Receive the data loaded into the UART DR (data register)
-    uint8_t receivedData = 0;
-    // use the uart 2 CMSIS define (reduce risk of hanging interrupt)
-    receivedData = hal_uart_read_byte(USART2);
-    // Add the received data into the rx buffer stream
-    xStreamBufferSendFromISR(port_uart2.rxbuffer, &receivedData, sizeof(receivedData), &xHigherPriorityTaskWoken);
-    // Check and trigger a context switch if needed
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  // Initialize variable to trigger context switch to false (no context switch)
+  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+  // Receive the data loaded into the UART DR (data register)
+  uint8_t receivedData = 0;
+  // use the uart 2 CMSIS define (reduce risk of hanging interrupt)
+  receivedData = hal_uart_read_byte(USART2);
+
+  // Add the received data into the rx buffer stream
+  xStreamBufferSendFromISR(port_uart2.rxbuffer, &receivedData, sizeof(receivedData), &xHigherPriorityTaskWoken);
+
+  // Check and trigger a context switch if needed
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 ```
 
@@ -191,17 +197,15 @@ One of the most important parts of the interrupt is the `xHigherPriorityTaskWoke
 On the other end of the receive queue, a task waits for data to appear and then acts upon it appropriately. In the example pictured below, the data is simply echoed back over UART for debugging purposes.
 
 ```c
-void tsk_USART2_Handler(void){
-    for(;;){
-        uint8_t buf[64];
-        size_t bytes = xStreamBufferReceive(port_uart2.rxbuffer, (void*) &buf, 64, portMAX_DELAY);
-        printf("%s (%d)\n", buf, bytes);
-        // reset the stream buffer
-        for (int i = 0; i < 64; i++)
-        {
-            buf[i] = 0;
-        }
-    }
+void tsk_USART2_Handler(void *param){
+  (void)param;
+  for(;;){
+    uint8_t buf[64];
+    size_t bytes = xStreamBufferReceive(port_uart2.rxbuffer, (void*) &buf, 64, portMAX_DELAY);
+    printf("%s (%d)\n", buf, bytes);
+    // reset the stream buffer
+    for (int i = 0; i < 64; i++) buf[i] = 0;
+  }
 }
 ```
 
