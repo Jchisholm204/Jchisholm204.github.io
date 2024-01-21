@@ -4,22 +4,35 @@
     "type": "split",
     "children": [
       {
-        "id": "26af4a002d24a0fe",
+        "id": "a5d65258a7feacab",
         "type": "tabs",
         "children": [
           {
-            "id": "cc79364d2537e19e",
+            "id": "dc42b9dcd1a2bdf1",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2023-10-30-stm32_cmake.md",
+                "file": "_posts/2024-12-8-freertos_canbus.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "9fe62bad44e002f1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2024-12-8-freertos_canbus.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -85,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "_posts/2023-10-30-stm32_cmake.md",
+                "file": "_posts/2024-12-8-freertos_canbus.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "_posts/2023-10-30-stm32_cmake.md",
+                "file": "_posts/2024-12-8-freertos_canbus.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "_posts/2023-10-30-stm32_cmake.md"
+                "file": "_posts/2024-12-8-freertos_canbus.md"
               }
             }
           }
@@ -147,11 +160,16 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "cc79364d2537e19e",
+  "active": "9fe62bad44e002f1",
   "lastOpenFiles": [
+    "_posts/2023-10-30-stm32_cmake.md",
+    "_posts/2023-11-25-freertos_uart.md",
+    "_posts/2024-12-8-freertos_canbus.md",
+    "assets/canbus_msg_structure.png",
+    "_posts/2024",
+    "_posts/2023",
     "README.md",
     "README 1.md",
-    "_posts/2023-10-30-stm32_cmake.md",
     "_posts/2023-10-4-vhdl_debouncer.md",
     "_posts/2023-4-26-vhdlPong.md",
     "_posts/2023-8-30-baremetal_blink.md",
@@ -167,8 +185,6 @@
     "_site/tags/wiring",
     "_posts/2022-6-25-CNCwiring.md",
     "_posts/2022-12-23-esp32_7segdisplay.md",
-    "_posts/2022-12-23-esp32_7segdisplay.mc",
-    "_site/posts/vhdl8bitdipswitch/index.html",
     "_posts/2023-2-28-vhdl8bitdipswitch.md",
     "_site/assets/vex/robot_top.jpg",
     "_site/assets/vex/robot_front.jpg",
@@ -178,7 +194,6 @@
     "_site/assets/timebot/output_timebot.png",
     "_site/assets/timebot/output_time.png",
     "_site/assets/timebot/output_status.png",
-    "_site/assets/timebot/output_scoreboard.png",
-    "_site/assets/timebot/output_rm.png"
+    "_site/assets/timebot/output_scoreboard.png"
   ]
 }
