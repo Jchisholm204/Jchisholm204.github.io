@@ -28,56 +28,68 @@ Since I am writing yet another driver for my FreeRTOS system, the first step is 
 To initialize the CAN peripheral on the STM32, it must first be enabled by the reset and clock control register (RCC). Secondly, the GPIO pins being used must be enabled and the multiplexer must be set to attach the pins to the CAN controller. Much of the CAN bus initialization is similar to the UART initialization described in another article, thus I have attached the code and will only discuss some of the challenges I faced.
 
 ```c
+/**
+ * @brief Initialize a CAN bus
+ * 
+ * @param CAN The CAN bus to initialize
+ * @param bitrate CAN Bitrate (50, 100, 125, 250, 500, 1000 kbps)
+ * @param NART TRUE to disable automatic retransmission. Should be FALSE for normal operation
+ * @param pin_tx GPIO PIN (automatic setup for can bus)
+ * @param pin_rx GPIO PIN (automatic setup for can bus)
+ * @returns HAL_CAN_OK or HAL_CAN_xx_ERR upon failure
+ */
 static inline uint8_t hal_can_init(CAN_TypeDef * CAN, CAN_BITRATE bitrate, bool NART, uint16_t pin_tx, uint16_t pin_rx){
-    // Enable the CAN bus clock
-    if(CAN == CAN1) RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
-    if(CAN == CAN2) RCC->APB1ENR |= RCC_APB1ENR_CAN2EN;
-    // Set up the GPIO pins
-    gpio_set_mode(pin_tx, GPIO_MODE_AF);
-    gpio_set_af(pin_tx, 9); // GPIO Alternate function 9 -> CAN Bus
-    gpio_set_mode(pin_rx, GPIO_MODE_AF);
-    gpio_set_af(pin_rx, 9);
-    // Request the CAN bus to enter into initization mode
-    SET_BIT(CAN->MCR, CAN_MCR_INRQ);
-    while(!(CAN->MSR & CAN_MSR_INAK));
-    // Reset All other bits leaving INRQ=
-    CAN->MCR = 0x1UL; // NOTE: This assignment is meant to clear the register. Use of (=) operand is not a mistake
-    // Enable automatic bus error management
-    SET_BIT(CAN->MCR, CAN_MCR_ABOM);
-    // Configure Automatic Retransmission
-    if(NART) SET_BIT(CAN->MCR, CAN_MCR_NART);
-    // Disable Time Controlled Communication Mode (extension of CAN protocol)
-    CLEAR_BIT(CAN->MCR, CAN_MCR_TTCM);
-    // Enable FIFO mode for tx registers
-    SET_BIT(CAN->MCR, CAN_MCR_TXFP);
-    // Setup bus bitrates
-    CAN->BTR &= ~((0x03UL << 24) | (0x07UL << 20) | (0x0FUL << 16) | (0x1FFUL)); // Zero out the register
-    CAN->BTR |=  (uint32_t)((((can_configs[bitrate].TS2-1) & 0x07) << 20) | (((can_configs[bitrate].TS1-1) & 0x0F) << 16) | ((can_configs[bitrate].BRP-1) & 0x1FF)); // Set up the bit timing        
-    // Initialize the filter registers
-    SET_BIT(CAN1->FMR, CAN_FMR_FINIT);           // Enter into initialization mode
-    CLEAR_BIT(CAN1->FMR, CAN_FMR_CAN2SB);        // Clear the Filter Selection register
-    CAN1->FMR |= (0xEUL << CAN_FMR_CAN2SB_Pos); // Set filters (0-13 -> CAN1) & (14-28 -> CAN2)
+    // Enable the CAN bus clock
+    if(CAN == CAN1) RCC->APB1ENR |= RCC_APB1ENR_CAN1EN;
+    if(CAN == CAN2) RCC->APB1ENR |= RCC_APB1ENR_CAN2EN;
+    // Set up the GPIO pins
+    gpio_set_mode(pin_tx, GPIO_MODE_AF);
+    gpio_set_af(pin_tx, 9); // GPIO Alternate function 9 -> CAN Bus
+    gpio_set_mode(pin_rx, GPIO_MODE_AF);
+    gpio_set_af(pin_rx, 9);
 
-    uint8_t f1_status = hal_can_setFilter(0, 1, 0, 0, 0x0UL, 0x0UL);
-    uint8_t f2_status = hal_can_setFilter(14, 1, 0, 0, 0x0UL, 0x0UL);
-    CLEAR_BIT(CAN1->FMR, CAN_FMR_FINIT);              // Deactivate initialization mode
+    // Request the CAN bus to enter into initization mode
+    SET_BIT(CAN->MCR, CAN_MCR_INRQ);
+    while(!(CAN->MSR & CAN_MSR_INAK));
 
-    if(f1_status != HAL_CAN_OK) return f1_status;
-    if(f2_status != HAL_CAN_OK) return f2_status;
+    // Reset All other bits leaving INRQ
+    CAN->MCR = 0x1UL; // NOTE: This assignment is meant to clear the register. Use of (=) operand is not a mistake
 
-    // Enable the bus
-    // Request to leave initialization mode
-    CAN->MCR &= ~(CAN_MCR_INRQ);
-    uint32_t timeout = 9999;
-    for(uint32_t wait_ack = 0; wait_ack < timeout; wait_ack++){
-        if((CAN->MSR & CAN_MSR_INAK) == 0){
-            // Return: Success if CAN enables sucessfully
-            return HAL_CAN_OK;
-        }
-        for(uint32_t spin = 0; spin < timeout; spin++);
-    }
-    // Return error if CAN not initialized by end of timeout
-    return HAL_CAN_INIT_ERR;
+    // Enable automatic bus error management
+    SET_BIT(CAN->MCR, CAN_MCR_ABOM);
+    // Configure Automatic Retransmission
+    if(NART) SET_BIT(CAN->MCR, CAN_MCR_NART);
+    // Disable Time Controlled Communication Mode (extension of CAN protocol)
+    CLEAR_BIT(CAN->MCR, CAN_MCR_TTCM);
+    // Enable FIFO mode for tx registers
+    SET_BIT(CAN->MCR, CAN_MCR_TXFP);
+    // Setup bus bitrates
+    CAN->BTR &= ~((0x03UL << 24) | (0x07UL << 20) | (0x0FUL << 16) | (0x1FFUL)); // Zero out the register
+    CAN->BTR |=  (uint32_t)((((can_configs[bitrate].TS2-1) & 0x07) << 20) | (((can_configs[bitrate].TS1-1) & 0x0F) << 16) | ((can_configs[bitrate].BRP-1) & 0x1FF)); // Set up the bit timing
+                                                                                                                               // Initialize the filter registers
+    SET_BIT(CAN1->FMR, CAN_FMR_FINIT);           // Enter into initialization mode
+    CLEAR_BIT(CAN1->FMR, CAN_FMR_CAN2SB);        // Clear the Filter Selection register
+    CAN1->FMR |= (0xEUL << CAN_FMR_CAN2SB_Pos); // Set filters (0-13 -> CAN1) & (14-28 -> CAN2)
+    uint8_t f1_status = hal_can_setFilter(0, 1, 0, 0, 0x0UL, 0x0UL);
+    uint8_t f2_status = hal_can_setFilter(14, 1, 0, 0, 0x0UL, 0x0UL);
+    CLEAR_BIT(CAN1->FMR, CAN_FMR_FINIT);              // Deactivate initialization mode
+
+    if(f1_status != HAL_CAN_OK) return f1_status;
+    if(f2_status != HAL_CAN_OK) return f2_status;
+
+    // Enable the bus
+    // Request to leave initialization mode
+    CAN->MCR &= ~(CAN_MCR_INRQ);
+    uint32_t timeout = 9999;
+    for(uint32_t wait_ack = 0; wait_ack < timeout; wait_ack++){
+        if((CAN->MSR & CAN_MSR_INAK) == 0){
+            // Return: Success if CAN enables sucessfully
+            return HAL_CAN_OK;
+        }
+        for(uint32_t spin = 0; spin < timeout; spin++);
+    }
+    // Return error if CAN not initialized by end of timeout
+    return HAL_CAN_INIT_ERR;
 }
 ```
 
@@ -88,33 +100,33 @@ Similarly to the Initialization code, receiving a message over CAN bus is nearly
 
 ```c
 static inline void hal_can_read(CAN_TypeDef * CAN, can_msg_t * rx_msg){
-    // Determine Message ID format (Identifier Extension)
-    rx_msg->format = (CAN_RI0R_IDE & CAN->sFIFOMailBox[0].RIR);
-    if(rx_msg->format == STANDARD_FORMAT){
-        rx_msg->id = (CAN_RI0R_STID & CAN->sFIFOMailBox[0].RIR) >> CAN_TI0R_STID_Pos;
-    }
-    else{
-        rx_msg->id = ((CAN_RI0R_EXID | CAN_RI0R_STID) & CAN->sFIFOMailBox[0].RIR) >> CAN_RI0R_EXID_Pos;
-    }
+    // Determine Message ID format (Identifier Extension)
+    rx_msg->format = (CAN_RI0R_IDE & CAN->sFIFOMailBox[0].RIR);
+    if(rx_msg->format == STANDARD_FORMAT){
+        rx_msg->id = (CAN_RI0R_STID & CAN->sFIFOMailBox[0].RIR) >> CAN_TI0R_STID_Pos;
+    }
+    else{
+        rx_msg->id = ((CAN_RI0R_EXID | CAN_RI0R_STID) & CAN->sFIFOMailBox[0].RIR) >> CAN_RI0R_EXID_Pos;
+    }
 
-    // Data Frame = 0 | Remote Frame = 1
-    rx_msg->type = (CAN_RI0R_RTR & CAN->sFIFOMailBox[0].RIR);
+    // Data Frame = 0 | Remote Frame = 1
+    rx_msg->type = (CAN_RI0R_RTR & CAN->sFIFOMailBox[0].RIR);
 
-    // Message data length
-    rx_msg->len = (CAN_RDT0R_DLC & CAN->sFIFOMailBox[0].RDTR) >> CAN_RDT0R_DLC_Pos;
+    // Message data length
+    rx_msg->len = (CAN_RDT0R_DLC & CAN->sFIFOMailBox[0].RDTR) >> CAN_RDT0R_DLC_Pos;
 
-    // Unload the data
-    rx_msg->data[0] = (uint8_t)((CAN_RDL0R_DATA0 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA0_Pos);
-    rx_msg->data[1] = (uint8_t)((CAN_RDL0R_DATA1 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA1_Pos);
-    rx_msg->data[2] = (uint8_t)((CAN_RDL0R_DATA2 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA2_Pos);
-    rx_msg->data[3] = (uint8_t)((CAN_RDL0R_DATA3 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA3_Pos);
-    rx_msg->data[4] = (uint8_t)((CAN_RDH0R_DATA4 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA4_Pos);
-    rx_msg->data[5] = (uint8_t)((CAN_RDH0R_DATA5 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA5_Pos);
-    rx_msg->data[6] = (uint8_t)((CAN_RDH0R_DATA6 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA6_Pos);
-    rx_msg->data[7] = (uint8_t)((CAN_RDH0R_DATA7 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA7_Pos);
+    // Unload the data
+    rx_msg->data[0] = (uint8_t)((CAN_RDL0R_DATA0 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA0_Pos);
+    rx_msg->data[1] = (uint8_t)((CAN_RDL0R_DATA1 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA1_Pos);
+    rx_msg->data[2] = (uint8_t)((CAN_RDL0R_DATA2 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA2_Pos);
+    rx_msg->data[3] = (uint8_t)((CAN_RDL0R_DATA3 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA3_Pos);
+    rx_msg->data[4] = (uint8_t)((CAN_RDH0R_DATA4 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA4_Pos);
+    rx_msg->data[5] = (uint8_t)((CAN_RDH0R_DATA5 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA5_Pos);
+    rx_msg->data[6] = (uint8_t)((CAN_RDH0R_DATA6 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA6_Pos);
+    rx_msg->data[7] = (uint8_t)((CAN_RDH0R_DATA7 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA7_Pos);
 
-    // Release the mailbox to hardware control
-    SET_BIT(CAN->RF0R, CAN_RF0R_RFOM0);
+    // Release the mailbox to hardware control
+    SET_BIT(CAN->RF0R, CAN_RF0R_RFOM0);
 }
 ```
 
@@ -143,46 +155,47 @@ When operating in the FIFO mode, a message can be deposited into any of the thre
 
 ```c
 /**
- * @brief Send a CAN message. Must wait for message to send before attempting another transmission
- *
- * @param CAN the CAN bus to send on
- * @param tx_msg pointer to the message to send
- * @param mailbox The TX mailbox to use (0..2). Use 0 as default
- * @return uint8_t HAL_CAN_OK or HAL_CAN_xx_ERR on on error
- */
+ * @brief Send a CAN message. Must wait for message to send before attempting another transmission
+ * 
+ * @param CAN the CAN bus to send on
+ * @param tx_msg pointer to the message to send
+ * @param mailbox The TX mailbox to use (0..2). Use 0 as default
+ * @return uint8_t HAL_CAN_OK or HAL_CAN_xx_ERR on on error
+ */
 static inline uint8_t hal_can_send(CAN_TypeDef * CAN, can_msg_t * tx_msg, uint8_t mailbox) {
+    // Check the mailbox is empty before attempting to send
+    if(CAN->sTxMailBox[mailbox].TIR & CAN_TI0R_TXRQ_Msk) return HAL_CAN_MAILBOX_NONEMPTY;
     if(mailbox > 2) return HAL_CAN_MAILBOX_SELRNG_ERR;
-    // Check the mailbox is empty before attempting to send
-    if(CAN->sTxMailBox[mailbox].TIR & CAN_TI0R_TXRQ_Msk) return HAL_CAN_MAILBOX_NONEMPTY;
-  
-    // Create temp variable to store mailbox info
-    uint32_t sTxMailBox_TIR = 0;
-    if(tx_msg->format == EXTENDED_FORMAT){
-        // Extended msg frame format
-        sTxMailBox_TIR = (tx_msg->id << CAN_TI0R_EXID_Pos) | CAN_TI0R_IDE;
-    }
-    else{
-        // Standard msg frane format
-        sTxMailBox_TIR = (tx_msg->id << CAN_TI0R_STID_Pos);
-    }
-    // Remote frame
-    if(tx_msg->type == REMOTE_FRAME){
-        SET_BIT(sTxMailBox_TIR, CAN_TI0R_RTR);
-    }
-  
-    // Clear and set the message length
-    CLEAR_BIT(CAN->sTxMailBox[mailbox].TDTR, CAN_TDT0R_DLC);
-    SET_BIT(CAN->sTxMailBox[mailbox].TDTR, (tx_msg->len & CAN_TDT0R_DLC));
-  
-    // Load the DR's
-    CAN->sTxMailBox[mailbox].TDLR = (((uint32_t) tx_msg->data[3] << CAN_TDL0R_DATA3_Pos) | ((uint32_t) tx_msg->data[2] << CAN_TDL0R_DATA2_Pos) | ((uint32_t) tx_msg->data[1] << CAN_TDL0R_DATA1_Pos) | ((uint32_t) tx_msg->data[0] << CAN_TDL0R_DATA0_Pos));
-    CAN->sTxMailBox[mailbox].TDHR = (((uint32_t) tx_msg->data[7] << CAN_TDH0R_DATA7_Pos) | ((uint32_t) tx_msg->data[6] << CAN_TDH0R_DATA6_Pos) | ((uint32_t) tx_msg->data[5] << CAN_TDH0R_DATA5_Pos) | ((uint32_t) tx_msg->data[4] << CAN_TDH0R_DATA4_Pos));
 
-    // Release the Mailbox to Hardware
-    CAN->sTxMailBox[mailbox].TIR = (uint32_t)(sTxMailBox_TIR | CAN_TI0R_TXRQ);
-    // Return read OK
-    return HAL_CAN_OK;
-  
+    // Create temp variable to store mailbox info
+    uint32_t sTxMailBox_TIR = 0;
+    if(tx_msg->format == EXTENDED_FORMAT){
+        // Extended msg frame format
+        sTxMailBox_TIR = (tx_msg->id << CAN_TI0R_EXID_Pos) | CAN_TI0R_IDE;
+    }
+    else{
+        // Standard msg frame format
+        sTxMailBox_TIR = (tx_msg->id << CAN_TI0R_STID_Pos);
+    }
+    
+    // Remote frame
+    if(tx_msg->type == REMOTE_FRAME){
+        SET_BIT(sTxMailBox_TIR, CAN_TI0R_RTR);
+    }
+
+    // Clear and set the message length
+    CLEAR_BIT(CAN->sTxMailBox[mailbox].TDTR, CAN_TDT0R_DLC);
+    SET_BIT(CAN->sTxMailBox[mailbox].TDTR, (tx_msg->len & CAN_TDT0R_DLC));
+
+    // Load the DR's
+    CAN->sTxMailBox[mailbox].TDLR = (((uint32_t) tx_msg->data[3] << CAN_TDL0R_DATA3_Pos) | ((uint32_t) tx_msg->data[2] << CAN_TDL0R_DATA2_Pos) | ((uint32_t) tx_msg->data[1] << CAN_TDL0R_DATA1_Pos) | ((uint32_t) tx_msg->data[0] << CAN_TDL0R_DATA0_Pos));
+    CAN->sTxMailBox[mailbox].TDHR = (((uint32_t) tx_msg->data[7] << CAN_TDH0R_DATA7_Pos) | ((uint32_t) tx_msg->data[6] << CAN_TDH0R_DATA6_Pos) | ((uint32_t) tx_msg->data[5] << CAN_TDH0R_DATA5_Pos) | ((uint32_t) tx_msg->data[4] << CAN_TDH0R_DATA4_Pos));
+
+    CAN->sTxMailBox[mailbox].TIR = (uint32_t)(sTxMailBox_TIR | CAN_TI0R_TXRQ);
+    
+    // Return read OK
+    return HAL_CAN_OK;
+
 }
 ```
 
@@ -190,15 +203,15 @@ Again, a wrapper function is provided to see if the mailbox is empty. This funct
 
 ```c
 /**
- * @brief Get is the Transmit Mailbox is empty
- * @param CAN The CAN bus mailbox to check
- * @param mailbox The TX mailbox to use (0..2). Use 0 as default
- * @return true if the mailbox is empty
- * @return false if the mailbox is pending
- */
+ * @brief Get is the Transmit Mailbox is empty
+ * @param CAN The CAN bus mailbox to check
+ * @param mailbox The TX mailbox to use (0..2). Use 0 as default
+ * @return true if the mailbox is empty
+ * @return false if the mailbox is pending
+ */
 static inline bool hal_can_send_ready(CAN_TypeDef * CAN, uint8_t mailbox){
-    // Check to see if mailbox is empty
-    return !(CAN->sTxMailBox[mailbox].TIR & CAN_TI0R_TXRQ_Msk);
+    // Check to see if mailbox is empty
+    return !(CAN->sTxMailBox[mailbox].TIR & CAN_TI0R_TXRQ_Msk);
 }
 ```
 
@@ -237,27 +250,35 @@ Another choice that was made after my discussion with Thomas Dean was to not blo
 One other benefit to having the task is the ability to timestamp messages. In future iterations of this code, another possibility would be to cycle through the received messages and display some type of error if stale (old) data is detected.
 
 ```c
-    // LOOP waiting for CAN messages
-    for(;;){
-        // LOOP pulling and sorting messages from the streambuffer
-        while(xStreamBufferBytesAvailable(CAN1_RX.streamHandle) > 0){
-            // Temp message to store the data comming out of the buffer
-            can_msg_t msg;
-            // Recieve a message from the buffer
-            xStreamBufferReceive(
-                    CAN1_RX.streamHandle, // Stream Buffer Handle
-                    (void*)&msg,          // Pointer to RX Buffer (void*)
-                    sizeof(can_msg_t),    // Size of RX Buffer (Should be size of CAN message)
-                    10                    // Ticks to Wait
-            );
-            // Load the message from the streambuffer into the hash table
-            CAN1_DATA[can1_hash(msg.id)] = msg;
-            // Timestamp the message
-            CAN1_DATA[can1_hash(msg.id)].timestamp = xTaskGetTickCount();
-            // printf("%d\n", CAN1_DATA[can1_hash(msg.id)].id);
-        }
-        vTaskDelay(10);
+// LOOP waiting for CAN messages
+for(;;){
+    // LOOP pulling and sorting messages from the streambuffer
+    while(xStreamBufferBytesAvailable(CAN1_RX.streamHandle) > 0){
+        // Temp message to store the data comming out of the buffer
+        can_msg_t msg;
+        // Recieve a message from the buffer
+        xStreamBufferReceive(
+                CAN1_RX.streamHandle, // Stream Buffer Handle
+                (void*)&msg,          // Pointer to RX Buffer (void*)
+                sizeof(can_msg_t),    // Size of RX Buffer (Shoudl be size of CAN message)
+                10                    // Ticks to Wait
+        );
+        printf("%ld\n", msg.id);
+        // Load the message from the streambuffer into the hash table
+        CAN1_DATA[can1_hash(msg.id)] = msg;
+        // Timestamp the message
+        CAN1_DATA[can1_hash(msg.id)].timestamp = xTaskGetTickCount();
+        // printf("%d\n", CAN1_DATA[can1_hash(msg.id)].id);
     }
+    // while(xStreamBufferBytesAvailable(CAN2_RX.streamHandle) > 0){
+    //     // Temp message to store the data comming out of the buffer
+    //     can_msg_t msg;
+    //     // Recieve a message from the buffer
+    //     xStreamBufferReceive(CAN2_RX.streamHandle, (void*)&msg, sizeof(can_msg_t), 10);
+    //     CAN2_DATA[can2_hash(msg.id)] = msg;
+    //     CAN2_DATA[can2_hash(msg.id)].timestamp = xTaskGetTickCount();
+    // }
+    vTaskDelay(100);
 }
 ```
 
@@ -273,25 +294,25 @@ To solve this problem, I used two methods. First, I employed a counting semaphor
 ```c
 // Initialize Semaphores for Transmit Mailboxes
 CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_COUNT]  = xSemaphoreCreateCountingStatic(
-		2, // Number of TX Mailboxes
-		0, // Starting Count (Goes up to Max Count)
-		&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_COUNT] // Pointer to static Buffer
-);
+            2, // Number of TX Mailboxes
+            0, // Starting Count (Goes up to Max Count)
+            &CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_COUNT] // Pointer to static Buffer
+    );
 ```
 
 Secondly, I used an array of binary semaphores that are indexed to each of the mailboxes. These act identically to the binary semaphores used in the UART implementation. They are stored in an array so that they can be looped through, but more on that later.
 
 ```c
 CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX0] = 
-	xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX0]);
+    xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX0]);
 xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX0]);
 
 CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX1] =
-	xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX1]);
+    xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX1]);
 xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX1]);
 
 CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX2] =
-	xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX2]);
+    xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX2]);
 xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX2]);
 ```
 
