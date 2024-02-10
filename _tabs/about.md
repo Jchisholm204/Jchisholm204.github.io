@@ -4,7 +4,9 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-Hey there! Welcome to my portfolio!
+### Hey there!
+
+#### Welcome to my portfolio!
 
 My name is Jacob Chisholm. I was born and raised in Vancouver BC and I'm currently living in Kingston Ontario attending Queen's University for Computer Engineering. When I'm not working on one of my projects I enjoy being outside on the mountains either skiing or biking. When I'm not on the hills you can usually find me down at the marina or out on the ocean.
 
