@@ -74,7 +74,7 @@ Now we need to set up github actions to deploy our site. Open up the repository 
 
 Once you have set up the GitHub Action, navigate over to the "Actions" tab on your repository. Select "Deploy Jekyll site to Pages" and select the deployment. You should be greeted with something similar to the following screen:
 
-![Deployment Img](assets/pd_jekyll.png)
+![Deployment Img](assets/pd_jekyll/build.png)
 
 Click on the URL and verify that everything initialized correctly.
 
