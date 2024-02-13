@@ -130,6 +130,31 @@ Almost all of the other fields can be left unchanged.
 ### Step 4
 Edit the other `yml` files. These files can be found under the `_data` folder and are fairly self explanatory.
 
+Start with editing the `authors.yml` file. When your done it should look something like this:
+
+```yml
+Jacob:
+  name: Jacob Chisholm
+  url: https://github.com/jchisholm204
+```
+
+Next, configure the `contact.yml` file. This file will be used to set up the bar on your site like the one below.
+
+![Contact Bar](/assets/pd_jekyll/contactBar.png)
+
+Anything left commented in the file will not show up in the contact bar.
+When you finish, your file should look something like the following:
+
+```yml
+- type: email
+  icon: "fas fa-envelope"
+  noblank: true # open link in current tab
+
+- type: linkedin
+  icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
+  url:  'https://www.linkedin.com/in/jchisholm204/'  
+```
+
 ## Writing a Post
 Now onto the main event: Writing articles for your portfolio. Everything you write must go under the `_posts` directory or they will not be added to your portfolio. Every post also has a specific naming convention. All posts have the format `YYYY-MM-DD-Post_Title.md` where `Post_Title` is the name of your article.
 
