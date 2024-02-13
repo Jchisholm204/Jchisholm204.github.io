@@ -59,7 +59,7 @@ end architecture;
 
 Markdown also supports inline code `like this` as well as *italics* and **bolded text**.
 
-You can also imbed [links](https://www.youtube.com/watch?v=dQw4w9WgXcQ) and images.
+You can also imbed [links like this Rick Astely Video](https://www.youtube.com/watch?v=dQw4w9WgXcQ) and images.
 
 ![RickRoll](https://i.insider.com/602ee9ced3ad27001837f2ac?width=700)
 
@@ -69,14 +69,26 @@ The first step to getting started is to create a Github Account. After that, dow
 ### Step 1
 Head over to the [Chirpy Template GitHub Repository](https://github.com/cotes2020/jekyll-theme-chirpy). Click the button <kbd>Use this template</kbd> > <kbd>Create a new repository</kbd>, and name the new repository `USERNAME.github.io`, where `USERNAME` represents your GitHub username. Be careful as this is case sensitive.
 
-### Step 2
-Now we need to set up github actions to deploy our site. Open up the repository you just cloned, navigate over to settings and pages. Select "Deploy from GitHub Actions" and "Use Recommended Action." It should read something along the lines of deploy Jekyll Site.
+If the <kbd>Use this template</kbd> button is not available, click on <kbd>Fork</kbd> > <kbd>Create Fork</kbd>. Make sure that you follow the naming convention mentioned above.
 
-Once you have set up the GitHub Action, navigate over to the "Actions" tab on your repository. Select "Deploy Jekyll site to Pages" and select the deployment. You should be greeted with something similar to the following screen:
+### Step 2
+Now we need to set up github actions to deploy our site. Open up the repository you just cloned, navigate over to settings > pages. 
+
+The <kbd>Source</kbd> should be set to <kbd>GitHub Actions</kbd>. Then, click <kbd>Configure</kbd>. This will send you to a new page. Click <kbd>Commit Changes</kbd>. This will deploy your site.
+
+![Settings-Pages](assets/pd_jekyll/DPPages.png)
+
+Once you have set up the GitHub Action, navigate over to the "Actions" tab on your repository. 
+
+
+![Settings-Pages](assets/pd_jekyll/DPActions.png)
+
+Select "Deploy Jekyll site to Pages" and select the deployment. You should be greeted with something similar to the following screen:
 
 ![Deployment Img](assets/pd_jekyll/build.png)
 
-Click on the URL and verify that everything initialized correctly.
+
+Wait until the build has completed, then click on the URL and verify that everything initialized correctly.
 
 ### Step 3
 Now that you have set up your site, its time to include all of your personal details. This is done by editing the `_config.yml` file in the source directory of your site. The most important ones to edit are included below:
@@ -138,3 +150,7 @@ image:
 
 ## Conclusion
 Now you should have everything you need to write your first post using your Jekyll site. If you ever need help with Markdown, [this site is a great reference](https://www.markdownguide.org/basic-syntax/). Markdown also supports inline HTML and CSS for anyone wanting to add something extra to a post.
+
+
+
+Images courtesy of Jason Debbo.
