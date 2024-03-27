@@ -12,21 +12,25 @@ tags:
 author: Jacob
 ---
 ## Introduction
-In my previous bare metal projects, I wrote driver implementations for UART and CAN bus running on the STM32F4 at the heart of the Vehicle Control Unit being developed for the Queen's Formula EV conversion. One of the last drivers to write before the VCU is ready is the ADC drivers. This article will explore writing the ADC drivers and the accompanying DMA drivers required for efficient access. Designing the system to use the DMA rather than interrupts gives it the unique advantage of requiring no software intervention during its lifetime.
+In my previous bare metal projects, I wrote driver implementations for the UART and CAN bus peripherals present on the STM32F4. One of the last drivers to write before the VCU is ready is the ADC drivers. 
+This article will explore writing the ADC drivers and the accompanying DMA drivers required for efficient access. Designing the system to use the DMA rather than interrupts gives it the unique advantage of requiring no software intervention during its lifetime.
 
 #### STM32 F4 ADC
 ADC's are hardware units that measure analog voltages and provide digital representations that can be used in software. 
-The ADC's onboard the STM32F446 microcontroller provide various features for reading and managing multiple analog channels. To efficiently read the analog voltages on the car, the ADC channels were setup in software such that the ADC readings would be managed by hardware and measured in a continuous circular queue.
-
+The ADC's onboard the STM32F446 microcontroller provide various features for reading and managing multiple analog channels. To efficiently read the analog voltages, the ADC channels were setup in software such that the ADC readings would be managed by hardware and measured in a continuous circular queue.
+Writing the code in this manner ensures that barring any physical error with the ADC interface, the most recent voltage reading will always be available to the code at a set location in memory. The exact location is determined by the placement of the ADC array, offset by the bit width and channel number.
 #### STM32 F4 DMA
 The DMA is another hardware unit onboard the STM32F446 microcontroller. DMA stands for direct memory access. The DMA unit can transfer data between two locations in memory without involvement from the processor. On the STM32F446, DMA transfers can be triggered periodically, by the processor, or directly via an interrupt signal from an onboard peripheral.
+In the implementation shown below, the DMA is configured for peripheral to memory transfers driven by peripheral interrupt signals. One of the key limitations of the DMA HAL is that the DMA is setup to ONLY function in this manner. Memory to memory or memory to peripheral transfers would either need a separate initialization function, or the existing function would need to be modified.
 
 
 ## ADC Hardware Abstraction Layer
 The first step in writing a driver is to break apart the hardware from the software. As with all of my other drivers, this was done by splitting up the code into multiple sections, starting with the Hardware Abstraction Layer (HAL).
 
 ### Initialization
-To initialize the ADC peripheral on the STM32, it must first be enabled by the reset and clock control register (RCC). The STM32F446 has 3 ADC peripherals. When initializing the ADC for the first time, most of the functions can be disabled. The most important part of the initialization is ensuring that the ADC is left in the `OFF` state at the end of initialization and that both DMA transfers and continuous requests are enabled. This ensures that ever time the ADC completes a conversion (finishes a measurement) the DMA is notified. Setting the `CONT` bit also ensures that once the ADC finishes all of the reads in the queue, it returns to the start of the list.
+To initialize the ADC peripheral on the STM32, it must first be enabled by the reset and clock control register (RCC). When initializing the ADC for the first time, most of the functions can be disabled.
+The most important part of the initialization is ensuring that the ADC is left in the `OFF` state at the end of initialization and that both DMA transfers and continuous requests are enabled. This ensures that ever time the ADC completes a conversion (finishes a measurement) the DMA is notified. Setting the `CONT` bit also ensures that once the ADC finishes all of the reads in the queue, it returns to the start of the list.
+The STM32 also supports ADC watchdog and injected channels. Injected channels have been disabled in this implementation. While the watchdog may be configured in the future, it is not part of the current HAL implementation.
 
 ```c
 /**
@@ -91,8 +95,8 @@ static inline enum SYS_ERROR hal_adc_init(ADC_TypeDef *adc, enum ADC_RESOLUTION 
 
 Unless in special circumstances, the ADC resolution should always be set to `ADC_RESOLUTION_12_BIT`. Otherwise the ADC initialization is fairly similar to the other peripherals I've covered.
 ### Channel Configuration
-To read a sequence of analog voltages, the ADC's channels must first be configured in the sample register. ADC channels are assigned to certain pins by the chip manufacture. Each pin capable of connecting to the ADC has a channel number. 
-Channels can be organized in any order and with varying sampling times. For my applications, channel ordering does not play a large role other than avoiding conflicts. To add a channel to the sequence, the function below is used to configure a channel, placing it in one of the available ranks (positions in the hardware array holding the sequence).
+To read a sequence of analog voltages, the ADC's channels must first be configured in the sequence registers. ADC channels are assigned to certain pins by the chip manufacturer. Each pin capable of connecting to the ADC has its own channel number. 
+Channels can be organized in any order and with varying sampling times. To add a channel to the sequence, the function below is used to configure a channel, placing it in one of the available ranks (positions in the hardware array holding the sequence).
 
 ```c
 /**
@@ -135,7 +139,9 @@ static inline void hal_adc_configChannel(ADC_TypeDef *adc, uint8_t channel, enum
 
 When selecting a channel, the most important thing is consider is the sample rate. Generally, channels with higher impedance require longer sampling times to get a more accurate reading. However, the higher the sample time, the longer it takes to process each channel, resulting in less current readings being present within the system.
 
+
 Once the channels have been configured, the hardware needs to know the number of channels present in the sequence. This number can be configured through the function below. 
+
 ```c
 /**
  * @brief Set the ADC Sequence Length
@@ -159,7 +165,7 @@ static inline void hal_adc_enable(ADC_TypeDef *adc){
 }
 ```
 
-Once the ADC is enabled, the Software Start bit (`SWSTART`) must be enabled to start analog conversions.
+Once the ADC is enabled, the Software Start bit (`SWSTART`) must be enabled to start analog conversions. This function can also be called on its own to both enable the ADC and start channel conversions.
 
 ```c
 static inline void hal_adc_startConversions(ADC_TypeDef *adc){
@@ -169,7 +175,8 @@ static inline void hal_adc_startConversions(ADC_TypeDef *adc){
 }
 ```
 
-Once the ADC has been enabled, it requires a few milliseconds of setup time before it can start converting channels. Once the `SWSTART` bit is set, the ADC will start converting analog channels and notifying the DMA upon each channel completion.
+Once the ADC has been enabled, it requires a few milliseconds of setup time before it can start converting channels, hence the delay. Once the `SWSTART` bit is set, the ADC will start converting analog channels and notifying the DMA upon each channel completion.
+
 
 The HAL also provides the following functions for suspending channel conversions and for disabling the ADC.
 ```c
@@ -280,11 +287,12 @@ static inline void hal_dma_stop(DMA_Stream_TypeDef *stream) {
 
 ## FreeRTOS Driver
 Exactly like the FreeRTOS drivers before it, the ADC driver contains all of the task safe calls to the HAL. 
-However, the ADC driver is written slightly differently from the others. The ADC + DMA driver aims to be a hardware managed interface. This works by utilizing the DMA to transfer data from the ADC's data registers into program memory every time the ADC completes a reading. As such, the most present reading from an ADC channel will always be in its spot in the `ADC_READINGS` array.
+However, the ADC driver is written slightly differently from the others. The ADC + DMA driver aims to be a hardware managed interface. This works by utilizing the DMA to transfer data from the ADC's data registers into program memory every time the ADC completes a reading. As such, the most present reading from an ADC channel will always be in the `ADC_READINGS` array.
 
 ### Initialization
 Similar to the other drivers, the initialization function acts as a parameter-less wrapper for the HAL initialization function. The ADC driver initialization also initializes all ADC readings to zero, and sets up the analog pins. 
-Before initializing the ADC, the task initializes the DMA, ensuring it will be ready when the ADC starts its conversions. The ADC is then initialized with a 12 bit resolution and the maximum sample rate using the enumerations provided by the HAL. The channels are then configured in the same order they appear in the `ADC_CHANNEL` enumeration in the header file. For testing purposes, only two of the channels have been initialized.
+Before initializing the ADC, the function initializes the DMA, ensuring it will be ready when the ADC starts its conversions. The ADC is then initialized with a 12 bit resolution and the maximum sample rate using the enumerations provided by the HAL. The channels are then configured in the same order they appear in the `ADC_CHANNEL` enumeration in the header file. For testing purposes, only two of the channels have been initialized.
+
 For other projects, it may make sense to rename the channels. The channels in this driver were named based on their physical naming on the VCU V2 PCB.
 Once all is configured, the DMA is started, followed by the ADC's start conversions command.
 
