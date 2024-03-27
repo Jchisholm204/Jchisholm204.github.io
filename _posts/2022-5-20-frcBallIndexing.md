@@ -1,8 +1,8 @@
 ---
 title: FRC Ball Indexing
 date: 2022-5-20
-categories: [FRC/VEX Robotics]
-tags: [wiring, automation]
+categories: [Robotics]
+tags: [Automation, FRC, Motion Control]
 author: Jacob
 image:
   path: /assets/frc/robot_side_left.jpg

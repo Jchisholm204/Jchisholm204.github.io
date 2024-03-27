@@ -1,8 +1,8 @@
 ---
 title: "VHDL: Debouncer"
 date: 2023-10-4
-categories: [FPGA]
-tags: [wiring, VHDL]
+categories: [HDL]
+tags: [VHDL, FPGA]
 author: Jacob
 ---
 

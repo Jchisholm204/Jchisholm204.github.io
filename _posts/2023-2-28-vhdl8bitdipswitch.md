@@ -1,8 +1,8 @@
 ---
 title: "VHDL: 8 Bit DipSwitch"
 date: 2023-2-28
-categories: [FPGA]
-tags: [VHDL, Cyclone II]
+categories: [HDL]
+tags: [VHDL, FPGA]
 author: Jacob
 image:
   path: /assets/fpga/8bit_vhdl/20230521_091753.jpg

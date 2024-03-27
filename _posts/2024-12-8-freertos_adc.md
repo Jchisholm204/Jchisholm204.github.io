@@ -1,14 +1,8 @@
 ---
 title: STM32 FreeRTOS ADC + DMA
 date: 2024-3-10
-categories:
-  - ARM Bare Metal
-tags:
-  - stm32
-  - baremetal
-  - firmware
-  - cmake
-  - freertos
+categories: [Firmware]
+tags: [STM32, CMake, FreeRTOS]
 author: Jacob
 ---
 ## Introduction

@@ -1,8 +1,8 @@
 ---
 title: "VHDL: Pong"
 date: 2023-4-26
-categories: [FPGA]
-tags: [VHDL, Cyclone II]
+categories: [HDL]
+tags: [VHDL, FPGA]
 author: Jacob
 image:
   path: /assets/fpga/pong/pong.jpg

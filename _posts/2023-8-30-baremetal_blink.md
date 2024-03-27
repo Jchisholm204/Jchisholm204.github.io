@@ -1,8 +1,8 @@
 ---
 title: STM32 Bare Metal Blinky
 date: 2023-8-30
-categories: [ARM Bare Metal]
-tags: [stm32, baremetal, firmware]
+categories: [Firmware]
+tags: [STM32]
 author: Jacob
 image:
   path: /assets/baremetal/q23mockecu.jpg

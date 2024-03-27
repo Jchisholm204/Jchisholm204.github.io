@@ -1,8 +1,8 @@
 ---
 title: "CNC Wiring"
 date: 2022-6-25
-categories: [FRC/VEX Robotics]
-tags: [wiring]
+categories: [Robotics]
+tags: []
 author: Jacob
 image:
   path: /assets/frc/cnc/20220617_175755.jpg
