@@ -12,7 +12,7 @@ tags:
 author: Jacob
 ---
 ## Introduction
-In my previous bare metal projects, I wrote driver implementations for UART and CAN bus running on the STM32F4 at the heart of the Vehicle Control Unit being developed for the Queen's Formula EV conversion. One of the last drivers to write before the VCU is ready is the ADC drivers. This article will explore writing the ADC drivers and the accompanying DMA drivers required for efficient access.
+In my previous bare metal projects, I wrote driver implementations for UART and CAN bus running on the STM32F4 at the heart of the Vehicle Control Unit being developed for the Queen's Formula EV conversion. One of the last drivers to write before the VCU is ready is the ADC drivers. This article will explore writing the ADC drivers and the accompanying DMA drivers required for efficient access. Designing the system to use the DMA rather than interrupts gives it the unique advantage of requiring no software intervention during its lifetime.
 
 #### STM32 F4 ADC
 ADC's are hardware units that measure analog voltages and provide digital representations that can be used in software. 
@@ -22,7 +22,7 @@ The ADC's onboard the STM32F446 microcontroller provide various features for rea
 The DMA is another hardware unit onboard the STM32F446 microcontroller. DMA stands for direct memory access. The DMA unit can transfer data between two locations in memory without involvement from the processor. On the STM32F446, DMA transfers can be triggered periodically, by the processor, or directly via an interrupt signal from an onboard peripheral.
 
 
-## Hardware Abstraction Layer
+## ADC Hardware Abstraction Layer
 The first step in writing a driver is to break apart the hardware from the software. As with all of my other drivers, this was done by splitting up the code into multiple sections, starting with the Hardware Abstraction Layer (HAL).
 
 ### Initialization
@@ -91,256 +91,255 @@ static inline enum SYS_ERROR hal_adc_init(ADC_TypeDef *adc, enum ADC_RESOLUTION 
 
 Unless in special circumstances, the ADC resolution should always be set to `ADC_RESOLUTION_12_BIT`. Otherwise the ADC initialization is fairly similar to the other peripherals I've covered.
 ### Channel Configuration
-To read a sequence of analog voltages, the ADC's channels must first be configured. ADC channels are assigned to certain pins by the chip manufacture. Each pin capable of connecting to the ADC has a channel number. 
-
-
-
-
-```c
-static inline void hal_can_read(CAN_TypeDef * CAN, can_msg_t * rx_msg){
-    // Determine Message ID format (Identifier Extension)
-    rx_msg->format = (CAN_RI0R_IDE & CAN->sFIFOMailBox[0].RIR);
-    if(rx_msg->format == STANDARD_FORMAT){
-        rx_msg->id = (CAN_RI0R_STID & CAN->sFIFOMailBox[0].RIR) >> CAN_TI0R_STID_Pos;
-    }
-    else{
-        rx_msg->id = ((CAN_RI0R_EXID | CAN_RI0R_STID) & CAN->sFIFOMailBox[0].RIR) >> CAN_RI0R_EXID_Pos;
-    }
-
-    // Data Frame = 0 | Remote Frame = 1
-    rx_msg->type = (CAN_RI0R_RTR & CAN->sFIFOMailBox[0].RIR);
-
-    // Message data length
-    rx_msg->len = (CAN_RDT0R_DLC & CAN->sFIFOMailBox[0].RDTR) >> CAN_RDT0R_DLC_Pos;
-
-    // Unload the data
-    rx_msg->data[0] = (uint8_t)((CAN_RDL0R_DATA0 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA0_Pos);
-    rx_msg->data[1] = (uint8_t)((CAN_RDL0R_DATA1 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA1_Pos);
-    rx_msg->data[2] = (uint8_t)((CAN_RDL0R_DATA2 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA2_Pos);
-    rx_msg->data[3] = (uint8_t)((CAN_RDL0R_DATA3 & CAN->sFIFOMailBox[0].RDLR) >> CAN_RDL0R_DATA3_Pos);
-    rx_msg->data[4] = (uint8_t)((CAN_RDH0R_DATA4 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA4_Pos);
-    rx_msg->data[5] = (uint8_t)((CAN_RDH0R_DATA5 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA5_Pos);
-    rx_msg->data[6] = (uint8_t)((CAN_RDH0R_DATA6 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA6_Pos);
-    rx_msg->data[7] = (uint8_t)((CAN_RDH0R_DATA7 & CAN->sFIFOMailBox[0].RDHR) >> CAN_RDH0R_DATA7_Pos);
-
-    // Release the mailbox to hardware control
-    SET_BIT(CAN->RF0R, CAN_RF0R_RFOM0);
-}
-```
-
-One important note to make is that this code only reads from the first of the three mailboxes. This is because I plan to trigger an interrupt on message reception, thus the other two mailboxes should never be in use.
-
-The HAL also contains a wrapper function to check if the mailbox is full. This function will not be used within the FreeRTOS code, but exists incase a future user wishes to switch to a polling system for message reception.
+To read a sequence of analog voltages, the ADC's channels must first be configured in the sample register. ADC channels are assigned to certain pins by the chip manufacture. Each pin capable of connecting to the ADC has a channel number. 
+Channels can be organized in any order and with varying sampling times. For my applications, channel ordering does not play a large role other than avoiding conflicts. To add a channel to the sequence, the function below is used to configure a channel, placing it in one of the available ranks (positions in the hardware array holding the sequence).
 
 ```c
 /**
- * @brief Get if a CAN message is pending in the CAN bus FIFO
- *
- * @param CAN The CAN bus FIFO to check
- * @returns TRUE if a message is pending
- * @returns FALSE if the FIFO is empty
- */
-static inline bool hal_can_read_ready(CAN_TypeDef * CAN)
-{
-    // Check for pending FIFO 0 messages
-    return CAN->RF0R & 0x3UL;
-}
-```
-
-### Message Transmission
-The STM32 CAN interface features three transmission mailboxes that can be configured to either work based on a priority system, or as a hardware managed FIFO. When writing this code, I chose to go with the latter, allowing me to ensure that once a message is deposited in a mailbox, it will be sent in a relatively quickly manner. This avoids the possibility of a lower priority message not making it onto the bus due to higher priority messages being sent first.
-When operating in the FIFO mode, a message can be deposited into any of the three mailboxes, and will be timestamped and sent out in order by the hardware. To send a message, the user must select the bus and the transmission mailbox to use. Similarly to the UART transmission code, the mailbox is first checked to ensure it is empty, and then is loaded with the message data. One difference between UART and CAN is that the CAN mailbox must be released to hardware with the Transmit Request bit before the message can be sent.
-
-```c
-/**
- * @brief Send a CAN message. Must wait for message to send before attempting another transmission
+ * @brief Configure an ADC Channel
  * 
- * @param CAN the CAN bus to send on
- * @param tx_msg pointer to the message to send
- * @param mailbox The TX mailbox to use (0..2). Use 0 as default
- * @return uint8_t HAL_CAN_OK or HAL_CAN_xx_ERR on on error
+ * @param adc The ADC to Configure
+ * @param channel The Channel to Configure
+ * @param cycles The Sample Time
+ * @param rank The Sequence Rank
  */
-static inline uint8_t hal_can_send(CAN_TypeDef * CAN, can_msg_t * tx_msg, uint8_t mailbox) {
-    // Check the mailbox is empty before attempting to send
-    if(CAN->sTxMailBox[mailbox].TIR & CAN_TI0R_TXRQ_Msk) return HAL_CAN_MAILBOX_NONEMPTY;
-    if(mailbox > 2) return HAL_CAN_MAILBOX_SELRNG_ERR;
+static inline void hal_adc_configChannel(ADC_TypeDef *adc, uint8_t channel, enum ADC_SAMPLE_TIME cycles, enum ADC_SEQUENCE rank){
+    (void)cycles;
+    // Setup Channel Sample Time
+    if(channel > 9) { // High Channel Register
+                      // Reset Sample Time
+        CLEAR_BIT(adc->SMPR1, (uint32_t)(0x7UL << (3U * (uint32_t)(channel-10U))));
+        // Set Sample Time
+        SET_BIT(adc->SMPR1, (uint32_t)(cycles << (3U * (uint32_t)(channel-10U))));
+    }
+    else { // Low Channel Register
+        CLEAR_BIT(adc->SMPR2, (uint32_t)(0x7UL << (3U * (uint32_t)(channel))));
+        SET_BIT(adc->SMPR2, (uint32_t)(cycles << (3U * (uint32_t)(channel))));
+    }
 
-    // Create temp variable to store mailbox info
-    uint32_t sTxMailBox_TIR = 0;
-    if(tx_msg->format == EXTENDED_FORMAT){
-        // Extended msg frame format
-        sTxMailBox_TIR = (tx_msg->id << CAN_TI0R_EXID_Pos) | CAN_TI0R_IDE;
+    // Add Channel to the Sequence Register
+    if(rank < 7U) {
+        CLEAR_BIT(adc->SQR3, (uint32_t)(0x1FU << (5U * ((rank) - 1U))));
+        SET_BIT(adc->SQR3, (uint32_t)(channel << (5U * ((rank) - 1U))));
+    }
+    else if(rank < 13U) {
+        CLEAR_BIT(adc->SQR2, (uint32_t)(0x1FU << (5U * ((rank) - 7U))));
+        SET_BIT(adc->SQR2, (uint32_t)(channel << (5U * ((rank) - 7U))));
     }
     else{
-        // Standard msg frame format
-        sTxMailBox_TIR = (tx_msg->id << CAN_TI0R_STID_Pos);
+        CLEAR_BIT(adc->SQR1, (uint32_t)(0x1FU << (5U * ((rank) - 13U))));
+        SET_BIT(adc->SQR1, (uint32_t)(channel << (5U * ((rank) - 13U))));
     }
-    
-    // Remote frame
-    if(tx_msg->type == REMOTE_FRAME){
-        SET_BIT(sTxMailBox_TIR, CAN_TI0R_RTR);
-    }
-
-    // Clear and set the message length
-    CLEAR_BIT(CAN->sTxMailBox[mailbox].TDTR, CAN_TDT0R_DLC);
-    SET_BIT(CAN->sTxMailBox[mailbox].TDTR, (tx_msg->len & CAN_TDT0R_DLC));
-
-    // Load the DR's
-    CAN->sTxMailBox[mailbox].TDLR = (((uint32_t) tx_msg->data[3] << CAN_TDL0R_DATA3_Pos) | ((uint32_t) tx_msg->data[2] << CAN_TDL0R_DATA2_Pos) | ((uint32_t) tx_msg->data[1] << CAN_TDL0R_DATA1_Pos) | ((uint32_t) tx_msg->data[0] << CAN_TDL0R_DATA0_Pos));
-    CAN->sTxMailBox[mailbox].TDHR = (((uint32_t) tx_msg->data[7] << CAN_TDH0R_DATA7_Pos) | ((uint32_t) tx_msg->data[6] << CAN_TDH0R_DATA6_Pos) | ((uint32_t) tx_msg->data[5] << CAN_TDH0R_DATA5_Pos) | ((uint32_t) tx_msg->data[4] << CAN_TDH0R_DATA4_Pos));
-
-    CAN->sTxMailBox[mailbox].TIR = (uint32_t)(sTxMailBox_TIR | CAN_TI0R_TXRQ);
-    
-    // Return read OK
-    return HAL_CAN_OK;
-
 }
 ```
 
-Again, a wrapper function is provided to see if the mailbox is empty. This function can be polled to check if the message is pending or has been sent.
+When selecting a channel, the most important thing is consider is the sample rate. Generally, channels with higher impedance require longer sampling times to get a more accurate reading. However, the higher the sample time, the longer it takes to process each channel, resulting in less current readings being present within the system.
+
+Once the channels have been configured, the hardware needs to know the number of channels present in the sequence. This number can be configured through the function below. 
+```c
+/**
+ * @brief Set the ADC Sequence Length
+ * 
+ * @param adc The ADC to Configure
+ * @param len The Length of the Sequence
+ */
+static inline void hal_adc_set_sequence_len(ADC_TypeDef *adc, uint8_t len){
+    CLEAR_BIT(adc->SQR1, ADC_SQR1_L);
+    SET_BIT(adc->SQR1, (uint32_t)((len - 1) << ADC_SQR1_L_Pos));
+}
+```
+
+### Enabling The ADC
+Given that the ADC is initialized to the `OFF` state, it must first be enabled before it starts to read the analog channels. To enable the ADC, it must first be turned on with the `ADON` bit present in its control register. 
+
+```c
+static inline void hal_adc_enable(ADC_TypeDef *adc){
+    if(!READ_BIT(adc->CR2, ADC_CR2_ADON))
+        SET_BIT(adc->CR2, ADC_CR2_ADON);
+}
+```
+
+Once the ADC is enabled, the Software Start bit (`SWSTART`) must be enabled to start analog conversions.
+
+```c
+static inline void hal_adc_startConversions(ADC_TypeDef *adc){
+    hal_adc_enable(adc);
+    for (unsigned int i = 0; i < (3U * (SYS_FREQUENCY/1000000U)); i++) __asm__("nop");
+    SET_BIT(adc->CR2, ADC_CR2_SWSTART);
+}
+```
+
+Once the ADC has been enabled, it requires a few milliseconds of setup time before it can start converting channels. Once the `SWSTART` bit is set, the ADC will start converting analog channels and notifying the DMA upon each channel completion.
+
+The HAL also provides the following functions for suspending channel conversions and for disabling the ADC.
+```c
+/**
+ * @brief Disable an ADC
+ * 
+ * @param adc The ADC to Disable
+ */
+static inline void hal_adc_disable(ADC_TypeDef *adc){
+    if(READ_BIT(adc->CR2, ADC_CR2_ADON))
+        CLEAR_BIT(adc->CR2, ADC_CR2_ADON);
+}
+```
 
 ```c
 /**
- * @brief Get is the Transmit Mailbox is empty
- * @param CAN The CAN bus mailbox to check
- * @param mailbox The TX mailbox to use (0..2). Use 0 as default
- * @return true if the mailbox is empty
- * @return false if the mailbox is pending
+ * @brief Stop ADC Conversions
+ * 
+ * @param adc The ADC to Stop
  */
-static inline bool hal_can_send_ready(CAN_TypeDef * CAN, uint8_t mailbox){
-    // Check to see if mailbox is empty
-    return !(CAN->sTxMailBox[mailbox].TIR & CAN_TI0R_TXRQ_Msk);
+static inline void hal_adc_stopConversions(ADC_TypeDef *adc){
+    CLEAR_BIT(adc->CR2, ADC_CR2_SWSTART);
 }
 ```
 
-## FreeRTOS Interface
-Exactly like the UART interface, the FreeRTOS interface contains all of the task safe calls to the HAL. The interface also provides the interrupt based message reception code. Most of the code written for the CAN bus was taken from the UART interface with a few key exceptions. First of all, the CAN interface uses a counting semaphore in addition to three binary semaphores for managing the transmit mailboxes. Secondly, the task responsible for managing the message reception loads the messages into a hash table such that they can be accessed by other tasks. This methodology may be changed in the future but it serves fine for now.
+## DMA Hardware Abstraction Layer
+The STM32F446 features a Direct Memory Access unit that is relatively simple to configure.
 
-### Message Reception
-Message reception consists of an interrupt paired with a FreeRTOS task. The interrupt is triggered upon message reception and is designed to move messages from the hardware FIFO into the FreeRTOS stream buffer. 
-
-```c
-void CAN1_RX0_IRQHandler(void){
-    // Initialize a variable to trigger context switch to false
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    // Temp message to store the incoming data
-    can_msg_t rx_msg;
-
-    // Utilize the hal to read the data and release the FIFO
-    hal_can_read(CAN1, &rx_msg);
-
-    // Send the recieved data into the stream buffer
-    xStreamBufferSendFromISR(
-            CAN1_RX.streamHandle,     // Streambuffer to send to
-            &rx_msg,                  // Data to copy into the buffer
-            sizeof(can_msg_t),        // Size of data
-            &xHigherPriorityTaskWoken // Checks if any tasks are waiting on buffer
-    );
-
-    // Check and trigger a context switch if needed
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
-}
-```
-
-Once a message is loaded into the FreeRTOS stream buffer, it is sorted into a hash table by the receive task. This interrupt/task combination was chosen after having a discussion with Thomas Dean, one of the professors at Queen's University. Initially, I was planning to use either a task or an interrupt for storing the messages. However only using a task came at the disadvantage of possibly missing messages, while only using an interrupt came at the cost of having a lengthy interrupt, which could have caused other problems with the code.
-Another choice that was made after my discussion with Thomas Dean was to not block the task on the stream buffer like I did with the UART receiver. As pointed out by Thomas Dean, blocking the task on the stream buffer could result in more resources being used by the scheduler to check if the task needs to run or not. It could also result in a longer period of time being required to wake the task. Therefore the task runs on a preemptive schedule where it is guaranteed to run every 10 milliseconds.
-One other benefit to having the task is the ability to timestamp messages. In future iterations of this code, another possibility would be to cycle through the received messages and display some type of error if stale (old) data is detected.
+### Initialization
+To initialize the DMA, both the DMA to use and the 'Stream' to use are required. Different DMA's and Streams map to different memory peripherals depending on the MCU datasheet. Each stream has multiple channels that determine the exact source of the trigger for the data transfer. Once the trigger is setup, all that is required is the memory addresses for the transfers, and how much data to transfer each time.
 
 ```c
-// LOOP waiting for CAN messages
-for(;;){
-    // LOOP pulling and sorting messages from the streambuffer
-    while(xStreamBufferBytesAvailable(CAN1_RX.streamHandle) > 0){
-        // Temp message to store the data comming out of the buffer
-        can_msg_t msg;
-        // Recieve a message from the buffer
-        xStreamBufferReceive(
-                CAN1_RX.streamHandle, // Stream Buffer Handle
-                (void*)&msg,          // Pointer to RX Buffer (void*)
-                sizeof(can_msg_t),    // Size of RX Buffer (Shoudl be size of CAN message)
-                10                    // Ticks to Wait
-        );
-        printf("%ld\n", msg.id);
-        // Load the message from the streambuffer into the hash table
-        CAN1_DATA[can1_hash(msg.id)] = msg;
-        // Timestamp the message
-        CAN1_DATA[can1_hash(msg.id)].timestamp = xTaskGetTickCount();
-        // printf("%d\n", CAN1_DATA[can1_hash(msg.id)].id);
+/**
+ * @brief Initialize the DMA peripheral
+ * 
+ * @param dma DMA peripheral to initialize
+ * @param stream DMA Stream to initialize
+ * @param ch DMA Channel to use
+ * @param priority DMA Priority Level
+ * @param mem_size DMA Memory Size
+ * @param periph_addr Peripheral Address
+ * @param mem_addr Memory Address
+ */
+
+
+static inline enum SYS_ERROR hal_dma_init(DMA_TypeDef *dma, DMA_Stream_TypeDef *stream, enum DMA_CHANNEL ch, enum DMA_PRIORITY priority, enum DMA_MEM_SIZE mem_size, volatile void *periph_addr, void *mem_addr, size_t num_transfers) {
+    // Enable DMA Clock
+    if (dma == DMA1) {
+        RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
+    } else if (dma == DMA2) {
+        RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN;
+    } else {
+        return SYS_INVALID_ARG;
     }
-    // while(xStreamBufferBytesAvailable(CAN2_RX.streamHandle) > 0){
-    //     // Temp message to store the data comming out of the buffer
-    //     can_msg_t msg;
-    //     // Recieve a message from the buffer
-    //     xStreamBufferReceive(CAN2_RX.streamHandle, (void*)&msg, sizeof(can_msg_t), 10);
-    //     CAN2_DATA[can2_hash(msg.id)] = msg;
-    //     CAN2_DATA[can2_hash(msg.id)].timestamp = xTaskGetTickCount();
-    // }
-    vTaskDelay(100);
+
+    /**             DMA Stream Setup            **/
+
+    // Disable Stream
+    CLEAR_BIT(stream->CR, DMA_SxCR_EN);
+    // Set Channel
+    CLEAR_BIT(stream->CR, DMA_SxCR_CHSEL);
+    SET_BIT(stream->CR, (uint32_t)(ch << DMA_SxCR_CHSEL_Pos));
+
+    // Set Peripheral Data Size
+    CLEAR_BIT(stream->CR, DMA_SxCR_PSIZE);
+    SET_BIT(stream->CR, (uint32_t)(mem_size << DMA_SxCR_PSIZE_Pos));
+
+    // Set Priority Level
+    CLEAR_BIT(stream->CR, DMA_SxCR_PL);
+    SET_BIT(stream->CR, (uint32_t)(priority << DMA_SxCR_PL_Pos));
+
+    // Setup Memory Increments (Peripheral Increment is disabled, Memory Increment is enabled)
+    SET_BIT(stream->CR, DMA_SxCR_MINC);
+    CLEAR_BIT(stream->CR, DMA_SxCR_PINC);
+    // Setup Circular Mode
+    SET_BIT(stream->CR, DMA_SxCR_CIRC);
+    // Set Direct Write to Memory (no FIFO)
+    CLEAR_BIT(DMA2_Stream0->FCR, DMA_SxFCR_DMDIS);
+
+    // Setup Transfers
+    DMA2_Stream0->NDTR = (uint32_t)num_transfers;
+    DMA2_Stream0->PAR = (uint32_t)(periph_addr);
+    DMA2_Stream0->M0AR = (uint32_t)(mem_addr);
+
+    return SYS_OK;
 }
 ```
 
-Please note that I have only posted the receive loop above. For the full code including the task setup, please see the [the appropriate page on GitHub.](https://github.com/qfsae/zenith/blob/master/Q24ECU/core/src/interfaces/interface_can.c)
+It is important to note that the above initialization function assumes that circular transfers will be used and that the DMA will only be required to transfer data from a peripheral to memory. Using circular transfers means that after each transfer, the DMA will increment the memory address by the data length until it reaches the number of transfers. Once it reaches the maximum number of transfers, it loops back to the beginning and starts over again.
 
-
-### Message Transmission
-When using an interface like UART, message transmission is rather simple. First you must check to see if the peripheral is ready, then deposit the data into the register, and finally wait for the acknowledgement flag from the hardware to ensure the message was sent. When implementing this system with semaphores, a simple binary semaphore can be used to ensure that only one task can access the transmission register at any given time.
-When working with CAN bus, there are three possible transmission registers to choose from. This rather complicates matters...
-
-To solve this problem, I used two methods. First, I employed a counting semaphore to keep track of the number of mailboxes in use. This provides the blocking mechanism for tasks to wait on a mailbox being available. If the counting semaphore has room in it, then it is known that at least one of the three mailboxes is empty.
+### Enabling the DMA
+To enable the DMA, the below function can be used. The only restriction on this function is that it should be invoked before the peripheral requesting the transfers is enabled.
 
 ```c
-// Initialize Semaphores for Transmit Mailboxes
-CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_COUNT]  = xSemaphoreCreateCountingStatic(
-            2, // Number of TX Mailboxes
-            0, // Starting Count (Goes up to Max Count)
-            &CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_COUNT] // Pointer to static Buffer
-    );
-```
-
-Secondly, I used an array of binary semaphores that are indexed to each of the mailboxes. These act identically to the binary semaphores used in the UART implementation. They are stored in an array so that they can be looped through, but more on that later.
-
-```c
-CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX0] = 
-    xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX0]);
-xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX0]);
-
-CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX1] =
-    xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX1]);
-xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX1]);
-
-CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX2] =
-    xSemaphoreCreateBinaryStatic(&CAN1_TX_SemaphoreBuffer[CAN_TX_SEMAPHORE_TX2]);
-xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_TX2]);
-```
-
-To figure out which mailbox is empty, the binary semaphores can be looped through, checking if each one is available. If the semaphore API returns that it is available, the HAL functions are called and the function waits for the message to be sent before releasing both the binary and counting semaphores.
-
-```c
-uint8_t can_send_msg(CAN_TypeDef *CAN, can_msg_t *tx_msg, TickType_t timeout){
-    // Check if a transmit mailbox is available
-    if(xSemaphoreTake(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_COUNT], timeout) != pdTRUE){
-        // Return failed to aquire TX mailbox
-        return HAL_CAN_MAILBOX_NONEMPTY;
-    }
-    // Attempt to aquire one of the transmit mailboxes
-    for(uint8_t i = 1; i < 4; i++){
-        if(xSemaphoreTake(CAN1_TX_Semaphore[i], 10) == pdTRUE){
-            // Utilize the hal to load the selected mailbox
-            hal_can_send(CAN, tx_msg, (i-1)/*mailbox=0..2*/);
-            // Wait for mailbox to be empty
-            while(!hal_can_send_ready(CAN, (i-1)));
-            // Give back the semaphores
-            xSemaphoreGive(CAN1_TX_Semaphore[i]);
-            xSemaphoreGive(CAN1_TX_Semaphore[CAN_TX_SEMAPHORE_COUNT]);
-            // Return OK
-            return HAL_CAN_OK;
-        }
-    }
-    return HAL_CAN_FATAL_ERR;
+static inline void hal_dma_start(DMA_Stream_TypeDef *stream) {
+    SET_BIT(stream->CR, DMA_SxCR_EN);
 }
 ```
 
+A similar function is also provided for disabling the DMA.
 
-## Conclusion
-Using the UART drivers as a learning experience, I have successfully created a basic interrupt driven and thread safe CAN bus driver. For the future, I would like to have employed a mechanism to automatically release the semaphores upon a mailbox being freed by hardware. I would also like to find a better solution to storing CAN bus messages than a hash table. However for the moment, both of these implementations will work plenty fine for my purposes. Finally, I would like to thank Thomas Dean, a professor at Queen's University who teaches ELEC377: Operating Systems. Even though I am a full year away from being enrolled in his course he was able to share some valuable advice necessary to the completion of this project.
+```c
+static inline void hal_dma_stop(DMA_Stream_TypeDef *stream) {
+    CLEAR_BIT(stream->CR, DMA_SxCR_EN);
+}
+
+```
+
+## FreeRTOS Driver
+Exactly like the FreeRTOS drivers before it, the ADC driver contains all of the task safe calls to the HAL. 
+However, the ADC driver is written slightly differently from the others. The ADC + DMA driver aims to be a hardware managed interface. This works by utilizing the DMA to transfer data from the ADC's data registers into program memory every time the ADC completes a reading. As such, the most present reading from an ADC channel will always be in its spot in the `ADC_READINGS` array.
+
+### Initialization
+Similar to the other drivers, the initialization function acts as a parameter-less wrapper for the HAL initialization function. The ADC driver initialization also initializes all ADC readings to zero, and sets up the analog pins. 
+Before initializing the ADC, the task initializes the DMA, ensuring it will be ready when the ADC starts its conversions. The ADC is then initialized with a 12 bit resolution and the maximum sample rate using the enumerations provided by the HAL. The channels are then configured in the same order they appear in the `ADC_CHANNEL` enumeration in the header file. For testing purposes, only two of the channels have been initialized.
+For other projects, it may make sense to rename the channels. The channels in this driver were named based on their physical naming on the VCU V2 PCB.
+Once all is configured, the DMA is started, followed by the ADC's start conversions command.
+
+```c
+void adc_init(void){
+    
+    // Zero out ADC Readings
+    for(int i = 0; i < ADC_CHANNEL_MAX; i++){
+        ADC_READINGS[i] = 0;
+    }
+
+    // Reduce the ADC Clock to APB2/8
+    SET_BIT(ADC123_COMMON->CCR, 3 << 16);
+
+    // Configure Analog GPIO Pins
+    gpio_set_mode(PIN_A5Vin_1, GPIO_MODE_ANALOG);
+    gpio_set_mode(PIN_A5Vin_2, GPIO_MODE_ANALOG);
+
+    // Setup DMA for ADC1
+    hal_dma_init(DMA2, DMA2_Stream0, DMA_CHANNEL_0, DMA_PRIORITY_LOW, DMA_MEM_SIZE_16, &(ADC1->DR), ADC_READINGS, ADC_CHANNEL_MAX);
+    // Setup ADC1
+    hal_adc_init(ADC1, ADC_RESOLUTION_12_BIT);
+    // Setup Channel Sequence
+    hal_adc_configChannel(ADC1, PIN_A5Vin_1_ADCCH, ADC_CYCLES_480, ADC_SQ1);
+    hal_adc_configChannel(ADC1, PIN_A5Vin_2_ADCCH, ADC_CYCLES_480, ADC_SQ2);
+    // Set Sequence Length
+    hal_adc_set_sequence_len(ADC1, ADC_CHANNEL_MAX);
+
+    spin(9999999UL); // Wait for ADC to stabilize
+
+    // Enable the DMA Stream
+    hal_dma_start(DMA2_Stream0);
+    // Enable ADC and Start Conversions
+    hal_adc_startConversions(ADC1);
+}
+```
+
+Note that special care must be taken when ordering the channels. They must be placed in the same order as they appear in the `ADC_CHANNELS` enumeration, otherwise there will be data misalignment between the hardware and software when attempting to use the ADC's read function mentioned below.
+
+### Reading Channels
+Since it is not possible to write to an ADC channel, the driver only needs a read method. To make the method as accessible to outside programmers as possible, an ADC read can be accomplished passing the enumeration with the same name as the physical channel as labeled on the PCB into the following function.
+
+```c
+double adc_read(enum ADC_CHANNEL channel){
+    // Return obviously bad data if ADC is not enabled
+    if(!READ_BIT(ADC1->CR2, ADC_CR2_ADON)) return 123.456;
+    // Return 0 if ADC has encountered an overrun
+    if(READ_BIT(ADC1->SR, ADC_SR_OVR)) return 0.0;
+    // Return 0 if channel is out of range
+    if(channel > ADC_CHANNEL_MAX) return 0.0;
+    // TODO: add scaling for 12v/5v
+    return ADC_READINGS[channel]*3.3/4096.0;
+}
+```
+
+Note that this function does not actually interface with the ADC's data registers at all. This is because, as discussed earlier, the ADC reads in a continuous loop with the most recent reading always being present within the `ADC_READINGS` array.
+
+When programming with this interface, it is important to check for both zero values, or out of range values. For instance, the maximum voltage allowed on an STM32 ADC pin is 3.3V. Therefore, if the ADC reading being returned is 123.456V, there is an obvious error somewhere in the system. Similarly, in the Formula SAE competition, sensors returning an analog value of 0V must be assumed to be in an error state.
