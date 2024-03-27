@@ -25,8 +25,18 @@ While this could have been separated into two distinct control boards, the inter
 This board was given the designation of Vehicle Control Unit, and its design is outlined below.
 
 ## Schematic Design
-
-### Top Outline
+Utilizing the old IC wiring harness and the EV block diagram as a guide, the schematic design for the VCU was completed. Before starting, the following basic features that must be present in the board were outlined:
+- 24V Compatible
+- 24V Load Switches (x8)
+	- Inverters
+	- BMS
+	- Dashboard
+- 12V High Current Rail
+	- 6 12V Load Switches for legacy 12V sensors and devices such as the transponder
+- 5V Rail
+	- 6 5V Load Switches for sensors and BSPD
+- Analog Inputs
+### Top
 
 ### MCU
 
