@@ -14,12 +14,14 @@ As the Queen's Formula SAE team continues to transition from internal combustion
 The VCU sits at the heart of the car, responsible for everything from controlling the motor power and throttle control signals down to the coolant system and brake light.
 
 ### Internal Combustion
-In previous internal combustion cars, the control of the car was split up into two primary control units. The ECU, or engine control unit, interfaced with the sensors and throttle control. The ECU was responsible for all high speed computations and communications including engine timing, shifting, fuel injection and ignition control.
-The PDM, or Power Distribution Module, was responsible for controlling power flow throughout the car. With the exception of the starter motor, every electronic device on the car was fed power from one of the PDM's load switches.
+In previous years internal combustion cars, the control of the car was split up into two primary control units. The ECU, or engine control unit, interfaced with engine sensors and actuators. The ECU was responsible for all high speed computations and communications including engine timing, shifting, fuel injection and ignition control.
+The other primary control unit is the PDM, or Power Distribution Module. The PDM was responsible for controlling power flow throughout the car. With the exception of the starter motor, every electronic device on the car was fed power from one of the PDM's load switches.
 
 ### Electric VCU
-Upon moving to an electric vehicle, the decision was made to consolidate the ECU and PDM into a single control unit: The VCU. This decision was the result of the IC ECU having to manage and control a large variety of sensors and perform a significant amount of calculations to control the IC engine.
-However, inside of an electric vehicle, nearly all of the motor control is delegated out to the inverter. Additionally, accumulator (battery) management must be able to take place outside the car, and is largely completed by the BMS (Battery Management System).
+Upon moving to an electric vehicle, the decision was made to consolidate the ECU and PDM into a single control unit: The VCU.
+This decision was the result of the IC ECU having to manage and control a large variety of sensors and perform a significant amount of calculations to control the IC engine.
+However, inside of an electric vehicle, nearly all of the motor control is delegated out to the inverter.
+Additionally, accumulator (battery) and its monitoring systems must be fully self contained, and is largely fulfilled by the BMS (Battery Management System).
 This leaves only two primary responsibilities left over for the VCU: Power Management and Throttle Control.
 While this could have been separated into two distinct control boards, the intercommunication required would significantly increase the technical complexity of both boards involved. Thus, the decision was made to use a single board for both tasks.
 This board was given the designation of Vehicle Control Unit, and its design is outlined below.
@@ -66,7 +68,7 @@ The MCU schematic document also contains two sub schematics for CAN and an I2C b
 
 The CAN schematic contains a dip switch for enabling the optional termination resistors. Note that 3.3V CAN transceivers are used allow debugging of the CAN bus while the board is powered off of the 3.3V rail provided by the debugger.
 ### Power Management
-As previously mentioned, power management is one of the main responsibilities of the VCU. The VCU contains 24V, 12V and 5V rails, all of which are externally accessible through load switched outputs. While each buck converter is designed to handle up to 20A, with the board being designed to draw up to 80A from the power input, it is highly unlikely that this power draw will ever be reached.
+As previously mentioned, power management is one of the main responsibilities of the VCU. The VCU contains 24V, 12V and 5V rails. The 24V rail is fed from battery power while the other voltage rails are stepped down by onboard buck converters. Each buck converter is designed to handle up to a maximum of 20A. The board is designed to be able to pull 80A from the battery. Given the power requirements of the car, this current draw is extremely unlikely, but ensures that the board will work well into the future.
 #### Board Power
 The board power schematic is the top level schematic equivalent for power distribution. Shown below, the schematic contains the screw terminals used for providing power to the board, the automotive fuses, and INA219 current sensors.
 
@@ -76,14 +78,15 @@ On the bottom left of the schematic, voltage dividers are used to provide feedba
 
 On the right side of the schematic, the voltage regulators are shown. Both regulators are fed from the 24V rail and use a buck switching topology designed using the TI WebBench tool. Fuses are placed on both sides of the buck converters. This ensures that the regulators will never be overdrawn, or overdraw from board power themselves. Placing fuses on both sides also allows the ability to safely check regulator operation and back power each voltage rail during testing.
 #### Load Switching
-
-Nealy all 
+All power outputs from the VCU are driven by load switches. Using load switches rather than relays or other solid state switches allows for safe switching and device protection on both the host and client side. 
+Each load switch is controlled by a shift register connected to the STM32 SPI Bus. Also connected to the control lines are different colored LEDs to indicate which load switches are active.
 
 ![](../assets/fsae/vcu/sch_5VLoadSwitches.png)
 
 ### Inputs and Outputs (IO)
-
+The second primary duty of the VCU is to interface with sensors around the car and manage the throttle control commands sent to the Inverter. Most of the sensors on the car are analog and are either 5V or 12V signals. The one exception is the wheel speed sensors that have a 12V PWM signal.
 #### Analog
+All analog signals are contained on a single schematic page. Voltage dividers are used to bring the input voltage down to a safe level for the 
 
 #### Digital
 
