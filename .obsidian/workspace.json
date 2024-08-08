@@ -18,6 +18,16 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "0b3c932a8083f341",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "assets/fsae/VCU/sch_analog.png"
+              }
+            }
           }
         ]
       }
@@ -149,6 +159,8 @@
   },
   "active": "9fe62bad44e002f1",
   "lastOpenFiles": [
+    "assets/fsae/VCU/sch_analog.png",
+    "_posts/2024-8-8-qfsae_vcu.md",
     "_posts/2024-02-14-PD_jekyll_workshop",
     "_posts/2024-3-27-qfsae_vcu.md",
     "_posts/2023-11-25-freertos_uart copy.md",
@@ -163,7 +175,6 @@
     "assets/fsae/VCU/sch_can.png",
     "assets/fsae/VCU/pcb3d_top.png",
     "assets/fsae/VCU/pcb3d_tilted.png",
-    "assets/fsae/VCU/pcb.png",
     "assets/fsae/VCU",
     "_posts/2024-12-8-freertos_adc.md",
     "_posts/2024-02-14-PD_jekyll_workshop.md",
@@ -179,7 +190,6 @@
     "_posts/2024-3-4-fsae_vcuv2.md",
     "_posts/2024-12-8-freertos_canbus copy.md",
     "_posts/2024-12-8-freertos_canbus.md",
-    "_posts/2024",
     "README.md",
     "README 1.md",
     "_posts/2023-10-4-vhdl_debouncer.md",

@@ -86,8 +86,8 @@ Each load switch is controlled by a shift register connected to the STM32 SPI Bu
 ### Inputs and Outputs (IO)
 The second primary duty of the VCU is to interface with sensors around the car and manage the throttle control commands sent to the Inverter. Most of the sensors on the car are analog and are either 5V or 12V signals. The one exception is the wheel speed sensors that have a 12V PWM signal.
 #### Analog
-All analog signals are contained on a single schematic page. Voltage dividers are used to bring the input voltage down to a safe level for the 
-
+All analog signals are contained on a single schematic page. Voltage dividers are used to bring the input voltage down to a safe level for the MCUs ADC.
+![[sch_analog.png]]
 #### Digital
 
 #### Indication and Debug
