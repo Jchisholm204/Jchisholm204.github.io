@@ -3,9 +3,9 @@
   color: danger
 
 - name: VHDL
-  percentage: 75
+  percentage: 60
   color:
 
-- name: Python
-  percentage: 60
+- name: Verilog
+  percentage: 55
   color: secondary
