@@ -1,8 +1,8 @@
 ---
 title: FRC Chair Bot
 date: 2022-6-5
-categories: [FRC/VEX Robotics]
-tags: [wiring]
+categories: [Robotics]
+tags: [FRC]
 author: Jacob
 image:
   path: /assets/frc/chairbot/chairbot_20220409_170709.jpg

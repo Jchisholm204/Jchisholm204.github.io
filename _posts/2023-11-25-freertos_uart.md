@@ -1,8 +1,8 @@
 ---
 title: STM32 FreeRTOS UART
 date: 2023-11-25
-categories: [ARM Bare Metal]
-tags: [stm32, baremetal, firmware, cmake, freertos]
+categories: [Firmware]
+tags: [STM32, CMake, FreeRTOS]
 author: Jacob
 image:
   path: /assets/baremetal/q23mockecu.jpg

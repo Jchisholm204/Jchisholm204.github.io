@@ -1,8 +1,8 @@
 ---
 title: "ESP32 7 Segment Display"
 date: 2022-12-23
-categories: []
-tags: [firmware]
+categories: [Firmware]
+tags: [ESP32, Arduino]
 author: Jacob
 image:
   path: /assets/projects/7_segment_display.jpg

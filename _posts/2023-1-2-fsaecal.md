@@ -1,8 +1,8 @@
 ---
 title: "FSAE: CAL"
 date: 2023-1-2
-categories: [FSAE]
-tags: [stm32, firmware]
+categories: [Firmware]
+tags: [STM32, FSAE]
 author: Jacob
 # image:
 #   path: /assets/fsae/screenshot_git.png
