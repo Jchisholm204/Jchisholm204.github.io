@@ -90,11 +90,11 @@ All analog signals are contained on a single schematic page. Voltage dividers ar
 According to the MCU datasheet, the smaller the input resistance to the ADC pins, the more accurate the reading will be with lower sample times. Therefore, small capacitors are placed near the output of the voltage divider pin for voltage smoothing and to help the ADC obtain a more accurate reading with a shorter sample time.
 
 
-![[sch_analog.png]]
+![](../assets/fsae/vcu/sch_analog.png)
 #### Digital
 The VCU has two kinds of  digital inputs. The first kind are used for measuring the PWM output from the wheel speed sensors. They are wired identically to the 12V analog inputs but lack the capacitor. The second type are used for general purpose inputs like driver buttons. They are designed to work with 5V signals and the voltage divider/capacitor combination doubles as both an external pull down as well as a noise filter.
 
-![[sch_digital.png]]
+~[](../assets/fsae/vcu/sch_digital.png)
 
 #### Indication and Debug
 Debugging custom PCBs can be fairly complex, especially with limited access to tools like on the side of a racetrack. To compensate, two forms of debugging peripherals are provided on the VCU.
@@ -104,7 +104,7 @@ First are four multicolored LEDs that can be used with minimal programming to ve
 The second form of debug information is two 7-segment LEDs that can be used to display numbers between 00 and 99. Since I had the opportunity to design the PCB at the same time as the software, the intention behind the segments is to be able to rotate through active error codes or display 00 when no error is present. With the addition of the segments, members of the team can easily debug error codes without any connected monitor or terminal.
 The 7-segment displays are both powered by 7-segment multiplexers that accept a 4 bit binary input. The multiplexers then light the corresponding LEDs on the 7-segment display. Using multiplexers rather than driving the displays directly uses less MCU pins and makes it easier on the programming side.
 
-![[sch_debug.png]]
+![](../assets/fsae/vcu/sch_debug.png)
 
 ## PCB Design
 Having never designed a PCB before, much less a 6 layer PCB, this part of the project was fairly difficult.
@@ -120,20 +120,20 @@ Below are several close up screenshots of the PCB design.
 ### Top Layer
 The top layer contains most of the power routes.
 
-![[pcb_top.png]]
+![](../assets/fsae/vcu/pcb_top.png)
 
 The top right of the board contains the 24V load switched outputs.
-![[pcb_24V.png]]
+![](../assets/fsae/vcu/pcb_24V.png)
 
 The far right contains the 12V load switched outputs.
-![[pcb_12V.png]]
+![](../assets/fsae/vcu/pcb_12V.png)
 
 Note that all load switches are fed by an automotive fuse and are powered by a plane route that splits out to all load switches.
 
 ### Power Planes
 The blue planes are power planes on layer 4. The largest plane in the middle is a 5V plane. Most of the PCB runs off of 5V and the few components that use 3.3V have their own LDO regulators. The small square on the bottom right is a 3.3V power plane for the MCU. Having this plane makes it easier to power the MCU, whose power pins are scattered around the package.
 
-![[pcb_powerplanes.png]]
+![](../assets/fsae/vcu/pcb_powerplanes.png)
 
 ### Analog and Digital Routes
 Almost all of the analog and digital routes are on the bottom right of the board near the MCU to minimize interference from the power elements on the top left.
@@ -141,16 +141,16 @@ Above the MCU is the single wire debug (SWD) interface and the main UART debug p
 On the bottom right is the two CAN bus interfaces. Again, placed close to the MCU with short, direct routes to minimize interference. 
 Analog interfaces are placed on the bottom, moving upwards through the voltage dividers and capacitors and finally directly into the MCU's ADC pins. 
 
-![[pcb_ad.png]]
+![](../assets/fsae/vcu/pcb_ad.png)
 
 ### Debug Interfaces
 As previously mentioned, there are two debug interfaces on the board. Both are pictured below.
 
 #### LED Debug Interface
-![[sch_dleds.png]]
+![](../assets/fsae/vcu/sch_dleds.png)
 
 #### 7 Segment Displays
-![[sch_7seg.png]]
+![](../assets/fsae/vcu/sch_7seg.png)
 
 ### MCU
 The MCU has several requirements including:
@@ -162,20 +162,20 @@ The MCU has several requirements including:
 The MCU routing was done in a way that minimizes layer changes. As seen below, layer changes were not completely avoided but were minimized substantially through the use of a power plane. 
 Most of the capacitors are placed on the left side of the MCU along with the crystal oscillator.  Both routes to the oscillator are roughly the same length and as short as possible to minimize possible interference or timing errors.
 
-![[pcb_mcu.png]]
+![](../assets/fsae/vcu/pcb_mcu.png)
 
 Below is the power plane for the MCU, fed by an LDO regulator.
 
-![[pcb_mcupower.png]]
+![](../assets/fsae/vcu/pcb_mcupower.png)
 
 ## Conclusion
 Overall designing this board was a great learning experience. This board was very complex, so much so that it might be a better idea to have done a series of smaller, simpler boards to accomplish the same tasks.
 
 Below are some screenshots of the finalized board design.
 
-![[pcb3d_tilted.png]]
-![[pcb3d_top.png]]
-![[pcb_top.png]]
+![](../assets/fsae/vcu/pcb3d_tilted.png)
+![](../assets/fsae/vcu/pcb3d_top.png)
+![](../assets/fsae/vcu/pcb_top.png)
 
 ## Update: 2024-8-9
 As Queen's QFSAE team moves into its second year in its EV design cycle, it remains unclear if this board will be used or if it will be substituted for a multitude of simpler boards.
