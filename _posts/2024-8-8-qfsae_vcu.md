@@ -94,7 +94,7 @@ According to the MCU datasheet, the smaller the input resistance to the ADC pins
 #### Digital
 The VCU has two kinds of  digital inputs. The first kind are used for measuring the PWM output from the wheel speed sensors. They are wired identically to the 12V analog inputs but lack the capacitor. The second type are used for general purpose inputs like driver buttons. They are designed to work with 5V signals and the voltage divider/capacitor combination doubles as both an external pull down as well as a noise filter.
 
-~[](../assets/fsae/VCU/sch_digital.png)
+![](../assets/fsae/VCU/sch_digital.png)
 
 #### Indication and Debug
 Debugging custom PCBs can be fairly complex, especially with limited access to tools like on the side of a racetrack. To compensate, two forms of debugging peripherals are provided on the VCU.
