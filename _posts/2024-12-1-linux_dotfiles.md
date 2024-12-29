@@ -11,18 +11,18 @@ image:
 
 Over the past few months I have been experimenting more and more with running Linux as a daily driver on my laptop. This article explores writing a bash script for some basic OS configuration.
 
-# Linux and Dotfiles
+## Linux and Dotfiles
 Over the summer, I started my Linux journey with Arch Linux.
 Using the [M4W](https://github.com/mylinuxforwork/dotfiles) dotfiles, I was able to quickly and easily get the full configuration up in no time.
 When school started, I switched to Fedora, then NixOS, then back to Fedora.
 The more I switched while trying to find the right distribution, the more time I spent setting up my home configuration.
 
-## What is a Home Configuration?
+### What is a Home Configuration?
 Depending on who you ask, a home configuration could be anything from the entirety of the setup to simply how you style a terminal.
 For me, a home configuration is how my terminal looks and feels.
 This includes setting up ZSH with starship, TMUX, Git, and Neovim.
 
-## What are Dotfiles?
+### What are Dotfiles?
 Dotfiles is a common name referring to application configuration files.
 For Alacritty (my terminal of choice), this involves a `.toml` file placed in `~/.config/alacritty`.
 For TMUX, a `.conf` file must be placed in `~/`.
@@ -42,7 +42,7 @@ When doing this for the first time, it can be a bit daunting.
 But when doing this for the 31st time, it can be quite annoying.
 Therefore, I decided to automate the process.
 
-# Automatic Installation 
+## Automatic Installation 
 After installing my dotfiles on multiple computers multiple times, I figured that there had to be a better way.
 So, I created my own bash script to automate this installation.
 While improvements could be made, this was my first attempt at writing a bash script.
@@ -50,7 +50,7 @@ Although I am very familiar to working in a terminal, the scripting syntax is a 
 Currently, I have tested the script to work on Fedora, Ubuntu and NixOS.
 I also added functionality for Arch Linux if I ever decide to go back.
 
-## The Script
+### The Script
 First, the script grabs the distribution release name and prompts the user to initialise the repository sub modules.
 All of my dotfiles are contained within a single monolithic repository.
 However, it is a collection of smaller repositories for each application.
@@ -206,7 +206,7 @@ fi
 echo "Install Completed."
 ```
 
-# Conclusion
+## Conclusion
 Overall, there really isn't a lot to it.
 However, I learned a lot from this experience that I will be able to apply to future Linux projects.
 This script has already been used twice and will hopefully be used many more times as I continue to try new releases on new machines.

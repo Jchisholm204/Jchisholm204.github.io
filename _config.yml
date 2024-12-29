@@ -16,7 +16,7 @@ timezone:
 
 title: Jacob Chisholm # the main title
 
-tagline: Computer Engineering Student with an interest in embedded development # it will display as the sub-title
+tagline: Computer Engineering Student with an interest in embedded development and HPC # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
   Jacob Chisholm's Personal Project Portfolio
