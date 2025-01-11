@@ -2,10 +2,10 @@
   percentage: 95
   color: danger
 
-- name: VHDL
-  percentage: 60
+- name: Verilog
+  percentage: 75
   color:
 
-- name: Verilog
-  percentage: 55
+- name: Bash
+  percentage: 60
   color: secondary

@@ -1,5 +1,10 @@
+- title: ECE Advisor, Queen's Space Engineering Team
+  from: 2024
+  to: present
+  description: Consulting on the standardization of systems, migration from AVR to STM32 ARM, and the minimization and optimization of network traffic.
+
 - title: Researcher, Queen's University CAESAR Lab, Mithrl Lab
-  from: 2023
+  from: 2024
   to: present
   description: Working on the union of Supercomputing and Robotics, taking computationally complex algorithms and redesigning them to run in real time.
 
