@@ -5,7 +5,7 @@ categories: [Firmware]
 tags: [STM32, QSET, Altium, FreeRTOS]
 author: Jacob
 image:
-  path: /assets/qset/armpcb/armpcb.jpg
+  path: /assets/qset/armpcb/final_board.jpg
   alt: Queen's Space Engineering Team Arm Control Board
 ---
 
