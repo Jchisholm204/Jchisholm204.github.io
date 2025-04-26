@@ -113,7 +113,16 @@ paginate: 10
 
 # The base URL of your site
 baseurl: ""
+callouts_level: loud # or loud
 
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Allow Latex Equations
+math: true
+    
 # ------------ The following options are not recommended to be modified ------------------
 
 kramdown:
@@ -164,6 +173,7 @@ defaults:
 
 sass:
   style: compressed
+
 
 compress_html:
   clippings: all
