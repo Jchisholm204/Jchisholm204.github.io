@@ -1,11 +1,34 @@
 - name: C
-  percentage: 95
+  percentage: 99
   color: danger
 
 - name: Verilog
-  percentage: 75
-  color:
+  percentage: 85
+  color: primary
+
+- name: CPP
+  percentage: 80
+  color: success
+
+- name: Python
+  percentage: 70
+  color: warning
 
 - name: Bash
-  percentage: 60
+  percentage: 55
+  color: info
+
+- name: SQL
+  percentage: 25
   color: secondary
+
+
+# Color Options:
+# - primary
+# - secondary
+# - success
+# - danger
+# - warning
+# - info
+# - light
+# - dark

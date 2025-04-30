@@ -1,7 +1,25 @@
-- name: Altium Designer
-  percentage: 85
+- name: GDB
+  percentage: 99
+  color: success
+
+- name: Saleae Logic
+  percentage: 90
   color: info
+
+- name: ModelSim
+  percentage: 85
+  color: primary
+
+- name: Altium Designer
+  percentage: 80
+  color: dark
 
 - name: Fusion 360 / Solidworks
   percentage: 70
-  color: success
+  color: secondary
+
+- name: Wireshark
+  percentage: 50
+  color: warning
+
+
