@@ -44,7 +44,7 @@ social:
     # - https://www.facebook.com/username
     - https://www.linkedin.com/in/jchisholm204
 
-google_site_verification: # fill in to your verification string
+google_site_verification: googlecd064e1fd6482b34.html
 
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
@@ -122,7 +122,7 @@ kramdown:
 
 # Allow Latex Equations
 math: true
-    
+
 # ------------ The following options are not recommended to be modified ------------------
 
 kramdown:
