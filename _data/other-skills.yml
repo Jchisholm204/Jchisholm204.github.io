@@ -2,11 +2,11 @@
   percentage: 99
   color: success
 
-- name: Saleae Logic
+- name: Logic Analyzers
   percentage: 90
   color: info
 
-- name: ModelSim
+- name: HDL Simulation
   percentage: 85
   color: primary
 
@@ -18,8 +18,8 @@
   percentage: 70
   color: secondary
 
-- name: Wireshark
-  percentage: 50
+- name: KiCad
+  percentage: 25
   color: warning
 
 

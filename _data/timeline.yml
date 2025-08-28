@@ -1,6 +1,11 @@
+- title: General Contractor, Performance Yacht Services
+  from: 2025
+  to: 2025
+  description: Performed generalized marine work including electrical repairs and detailing.
+
 - title: ECE Advisor, Queen's Space Engineering Team
   from: 2024
-  to: present
+  to: 2025
   description: Consulting on the standardization of systems, migration from AVR to STM32 ARM, and the minimization and optimization of network traffic.
 
 - title: Researcher, Queen's University CAESAR Lab, Mithrl Lab
