@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2025-04-07-elec390.md",
+                "file": "_posts/2025-10-19-crsf_driver.md",
                 "mode": "source",
-                "source": false
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "2025-04-07-elec390"
+              "title": "2025-10-19-crsf_driver"
             }
           },
           {
@@ -68,32 +68,6 @@
             }
           },
           {
-            "id": "998e565fae22fa82",
-            "type": "leaf",
-            "state": {
-              "type": "image",
-              "state": {
-                "file": "assets/miniSRC/reg_file.svg"
-              },
-              "icon": "lucide-image",
-              "title": "reg_file"
-            }
-          },
-          {
-            "id": "c1ef32bb4a84fc12",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "_posts/2025-04-18-miniSRC.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "2025-04-18-miniSRC"
-            }
-          },
-          {
             "id": "7025207a5c41e113",
             "type": "leaf",
             "state": {
@@ -108,7 +82,7 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -242,6 +216,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -253,38 +228,43 @@
   },
   "active": "9fe62bad44e002f1",
   "lastOpenFiles": [
-    "_site/posts/elec390/index.html",
-    "_site/posts/elec390",
-    "_site/tags/vision/index.html",
-    "_site/tags/vision",
-    "_site/tags/computer/index.html",
-    "_site/tags/computer",
-    "_site/tags/opencv/index.html",
-    "_site/tags/opencv",
-    "_site/tags/ros/index.html",
-    "_site/tags/ros",
-    "_site/posts/2025-04-07-elec390/index.html",
-    "_site/assets/390/ducks_spotted.png",
-    "assets/390/ducks_spotted.png",
-    "_site/assets/390/Screenshot from 2025-03-24 22-21-33.png",
-    "assets/390/Screenshot from 2025-03-24 22-21-33.png",
-    "_site/assets/390/roadline.png",
-    "assets/390/roadline.png",
-    "_site/assets/390/Screenshot from 2025-03-23 03-28-08.png",
-    "assets/390/Screenshot from 2025-03-23 03-28-08.png",
-    "_site/assets/390/duck_ir_thresh.png",
-    "assets/390/duck_ir_thresh.png",
     "_posts/2025-04-07-elec390.md",
+    "_posts/2025-10-19-crsf_driver.md",
+    "_site/assets/capstone/crsf/echo_mode.png",
+    "assets/capstone/crsf/echo_mode.png",
+    "_site/assets/capstone/crsf/Pasted image.png",
+    "assets/capstone/crsf/Pasted image.png",
+    "_site/assets/capstone/crsf/echo_batt.png",
+    "assets/capstone/crsf/echo_batt.png",
+    "_site/assets/capstone/crsf/echo.png",
+    "assets/capstone/crsf/echo.png",
+    "_site/assets/capstone/crsf",
+    "_site/assets/capstone",
+    "assets/capstone/crsf",
+    "assets/capstone",
+    "_site/posts/crsf_driver/index.html",
+    "_site/posts/crsf_driver",
+    "_site/posts/ros_project_templating/index.html",
+    "_site/posts/ros_project_templating",
+    "_site/posts/picarx/index.html",
+    "_site/posts/picarx",
+    "_site/assets/fpga/vga_text_display/sync_pulse_measured.png",
+    "_site/assets/fpga/vga_text_display/sync_pulse.png",
+    "_posts/2024-3-10-freertos_adc.md",
+    "_posts/2024-3-27-qfsae_vcu.md",
+    "_posts/2025-04-07-ros_project_templating.md",
+    "_posts/2025-05-12-vga_char_displ.md",
+    "_posts/2025-05-07-quartus_linux.md",
+    "_posts/2025-04-07-picarx.md",
+    "_posts/2025-04-18-miniSRC.md",
     "_tabs/about.md",
     "_tabs/archives.md",
     "_tabs/categories.md",
     "_tabs/tags.md",
-    "_posts/2025-04-18-miniSRC.md",
     "_posts/2023-10-4-vhdl_debouncer.md",
     "_posts/2024-12-1-linux_dotfiles.md",
     "_posts/2024-11-8-embedded_rust copy.md",
     "_posts/2024-8-8-qfsae_vcu.md",
-    "_posts/2024-3-27-qfsae_vcu.md",
     "_posts/2023-11-25-freertos_uart copy.md",
     "_posts/2023-10-30-stm32_cmake.md",
     "_posts/2024-12-8-freertos_adc.md",
@@ -292,12 +272,6 @@
     "_posts/2024-02-1-VCU_V1_PCB.md",
     "_posts/2023-11-25-freertos_uart.md",
     "_posts/2024-3-4-fsae_vcuv2.md",
-    "_posts/2024-12-8-freertos_canbus copy.md",
-    "_posts/2024-12-8-freertos_canbus.md",
-    "README.md",
-    "README 1.md",
-    "_posts/2023-4-26-vhdlPong.md",
-    "_posts/2023-8-30-baremetal_blink.md",
-    "_posts/2023-1-2-fsaecal.md"
+    "_posts/2024-12-8-freertos_canbus copy.md"
   ]
 }
