@@ -10,17 +10,17 @@
   percentage: 80
   color: success
 
-- name: Python
+- name: Shell Script
   percentage: 70
-  color: warning
+  color: secondary
 
 - name: CMake
   percentage: 65
-  color: secondary
-
-- name: Bash
-  percentage: 55
   color: info
+
+- name: Python
+  percentage: 55
+  color: warning
 
 
 

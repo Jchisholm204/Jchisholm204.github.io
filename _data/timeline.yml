@@ -1,3 +1,8 @@
+- title: Researcher, Queen's University CAESAR Lab
+  from: 2025
+  to: present
+  description: Architecting efficient Checkpoint/Restore mechanisms for Exascale Computing
+
 - title: General Contractor, Performance Yacht Services
   from: 2025
   to: 2025
@@ -8,9 +13,9 @@
   to: 2025
   description: Consulting on the standardization of systems, migration from AVR to STM32 ARM, and the minimization and optimization of network traffic.
 
-- title: Researcher, Queen's University CAESAR Lab, Mithrl Lab
+- title: Assistant Researcher, Queen's University CAESAR Lab, Mithrl Lab
   from: 2024
-  to: present
+  to: 2025
   description: Working on the union of Supercomputing and Robotics, taking computationally complex algorithms and redesigning them to run in real time.
 
 - title: Electrical Lead, Queen's Formula SAE Racing Team
