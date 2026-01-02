@@ -1,9 +1,10 @@
 ---
 title: Embedded CRSF Driver
 date: 2025-10-19
-categories: [Firmware]
+categories: [Firmware, STM32]
 tags: [STM32, CMake, FreeRTOS]
 author: Jacob
+hidden: false
 ---
 ## Introduction
 CRSF (CrossFire) is a high level communication protocol developed by Team Black Sheep (TBS) for transmitting control and telemetry data between a receiver and Flight Controller (FC).
@@ -32,7 +33,7 @@ The payload can range from 2 to 62 bytes to accommodate various message formats.
 The device address field, referred to as "address" in the previous section, is largely undocumented.
 In researching the protocol, the only documentation found was the following list of device addresses:
 
-| Address | Device Description               |
+| Address  | Device Description               |
 |----------|----------------------------------|
 | 0x00     | Broadcast address                |
 | 0x10     | USB Device                       |
@@ -409,6 +410,11 @@ To receive CRSF frames over the Serial driver, the CRSF layer reads incoming dat
 After receiving the FC ID, the next bytes are assumed to be the length, payload and CRC.
 Finally, the `_crsf_recv_packet` function is called to verify the packet CRC and unpack message data.
 
+> **Warning**
+> The following code snippet is partially completed and subject to change.
+> It has not been fully verified and should not be directly copied.
+{: .prompt-warning }
+
 ```c
 void vCRSF_Hndl_tsk(void* pvParams) {
     if (!pvParams)
@@ -438,6 +444,7 @@ void vCRSF_Hndl_tsk(void* pvParams) {
             if (rx_idx >= 2 && rx_idx == rx_buf[1] + 2) {
                 eCRSFError e = _crsf_recv_packet((void*)&rx_buf, &valid_msg);
                 if (e == eCRSFOK) {
+                // Todo - Verification
                     switch (valid_msg.id) {
                     case CRSFMsgRC:
                         memcpy(&pHndl->pkt.rc,

@@ -9,9 +9,13 @@ tags:
 author:
   - Jacob
 image:
-  path: /assets/fpga/vga_text_display/signal_full.png
-  alt: VGA Signal, captured with Selea Logic
+  path: /assets/fpga/vga_text_display/monitor_image.jpg
+  alt: Picture of the display output from the FPGA
 ---
+
+> **Incomplete:**
+> While the code may be finished, this article is currently incomplete.
+{:.prompt-warning}
 
 Nearly three years ago, I designed a simple VGA controller for use with my [FPGA Pong game](https://jchisholm204.github.io/posts/vhdlPong/).
 Now, I am redoing the project with the knowledge I gained from the past three years of digital design courses.
@@ -368,5 +372,3 @@ endmodule
 ![Results](../assets/fpga/vga_text_display/monitor_image.jpg)
 
 The source is [https://github.com/Jchisholm204/Pantheon/tree/main/display](https://github.com/Jchisholm204/Pantheon/tree/main/display)
-
-This article was written as a placeholder

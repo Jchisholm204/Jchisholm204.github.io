@@ -1,0 +1,68 @@
+---
+title: QSET USB Device
+date: 2025-1-19
+categories: [Firmware, QSET]
+tags: [STM32, QSET, USB]
+author: Jacob
+image:
+  path: /assets/qset/armpcb/armpcb.jpg
+  alt: Queen's Space Engineering Team Arm Control Board
+hidden: true
+search: false
+---
+
+## Introduction
+After completing the Queen's Space Engineering Team's (QSET) [Arm Control Board](https://jchisholm204.github.io/posts/qset_armv1/), I moved on to designing its firmware.
+
+The objective of the Arm board is to act as an interface between the hardware of the arm and the ROS software that runs the rover. 
+To do this, we must first define a software interface for communication between ROS and the board firmware.
+
+
+
+## Designing the PCB
+This design contains several features including:
+- 6 Debounced digital inputs
+- 4 PWM connectors with 5V logic level shifting
+- 2 CAN bus connectors
+- 4 Load switched 5V power connectors
+- 1 DC Motor driver circuit
+- 1 USB type C device interface
+- 2 USART connections
+
+![](../assets/qset/armpcb/PCB3D.png)
+
+
+### Digital Inputs
+The arm board contains six digital inputs for limit switches used during the homing sequence.
+Each input is individually debounced and routed into a digital input pin on the MCU.
+
+![](../assets/qset/armpcb/limits_pcb3d.png)
+
+### PWM Connectors
+The board also provides four PWM outputs for 5V servo connections.
+Each servo header is connected into 5V power and is logic level shifted to ensure compatibility with most servos.
+
+![](../assets/qset/armpcb/servos_pcb3d.png)
+
+### Load Switches
+The arm has various tooling attachments requiring 5V power. 
+Each 5V output is load switched and capable of handling a 2A load.
+
+![](../assets/qset/armpcb/tooling_pcb3d.png)
+
+### The MCU
+Like most of my recent projects, an STM32F446 is used at the heart of the design.
+See the schematics and PCB screenshots shown below, illustrating the USB and CAN bus connectivity.
+![](../assets/qset/armpcb/mcu_sch.png)
+![](../assets/qset/armpcb/mcu_pcb3d.png)
+
+## Final Design
+Design files are available on my [PCB GitHub Repository](https://github.com/Jchisholm204/robocopyright/tree/main/Arm_Control_Board).
+All of my designs are free to use but credit must be given to the original author (me).
+![](../assets/qset/armpcb/armpcb.jpg)
+<!-- ![](../assets/qset/armpcb/PCB3D.png) -->
+![](../assets/qset/armpcb/PCB.png)
+
+
+## Conclusion
+Now that this board has been completed, I will continue working with the team to develop FreeRTOS-based firmware, allowing the board to be controlled over a custom USB CDC interface.

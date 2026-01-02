@@ -1,7 +1,7 @@
 ---
 title: FRC Chair Bot
 date: 2022-6-5
-categories: [Robotics]
+categories: [Robotics, First Robotics Competition]
 tags: [FRC]
 author: Jacob
 image:

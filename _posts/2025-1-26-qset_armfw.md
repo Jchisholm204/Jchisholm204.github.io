@@ -1,7 +1,7 @@
 ---
 title: QSET Arm Firmware
 date: 2025-1-26
-categories: [Firmware]
+categories: [Firmware, QSET]
 tags: [STM32, QSET, Altium, FreeRTOS]
 author: Jacob
 image:

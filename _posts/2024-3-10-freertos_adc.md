@@ -1,7 +1,7 @@
 ---
 title: STM32 FreeRTOS ADC + DMA
 date: 2024-3-10
-categories: [Firmware]
+categories: [Firmware, STM32]
 tags: [STM32, CMake, FreeRTOS]
 author: Jacob
 ---

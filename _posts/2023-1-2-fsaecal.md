@@ -1,7 +1,7 @@
 ---
 title: "FSAE: CAL"
 date: 2023-1-2
-categories: [Firmware]
+categories: [Firmware, Formula SAE]
 tags: [STM32, FSAE]
 author: Jacob
 # image:

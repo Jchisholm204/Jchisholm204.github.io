@@ -3,11 +3,13 @@ title: ROS Project Templating
 markdown: kramdown
 date: 2025-09-13
 categories:
+  - Robotics
 tags:
   - ROS
 author:
   - Jacob
 math: "true"
+hidden: true
 ---
 
 ROS projects can quickly become large and over complicated.

@@ -1,7 +1,7 @@
 ---
 title: QFSAE Vehicle Control Unit
 date: 2024-3-27
-categories: [PCB]
+categories: [PCB, Formula SAE]
 tags: [STM32, FSAE, Altium]
 author: Jacob
 image:

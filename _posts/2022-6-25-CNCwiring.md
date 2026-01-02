@@ -1,7 +1,7 @@
 ---
 title: "CNC Wiring"
 date: 2022-6-25
-categories: [Robotics]
+categories: [Robotics, First Robotics Competition]
 tags: []
 author: Jacob
 image:

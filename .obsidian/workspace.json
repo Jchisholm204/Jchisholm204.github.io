@@ -34,6 +34,30 @@
               "icon": "lucide-file",
               "title": "about"
             }
+          },
+          {
+            "id": "fe2c4f0205746a1d",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          },
+          {
+            "id": "e7f03e3997634887",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2025-12-24-planner_comparison.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "2025-12-24-planner_comparison"
+            }
           }
         ]
       },
@@ -80,9 +104,37 @@
               "icon": "lucide-file",
               "title": "2025-04-07-elec390"
             }
+          },
+          {
+            "id": "5e04c2a157d71350",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2025-05-07-quartus_linux.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "2025-05-07-quartus_linux"
+            }
+          },
+          {
+            "id": "39154109a3075f56",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_tabs/about.md",
+                "mode": "source",
+                "source": true
+              },
+              "icon": "lucide-file",
+              "title": "about"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -226,52 +278,53 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "9fe62bad44e002f1",
+  "active": "5e04c2a157d71350",
   "lastOpenFiles": [
+    "_posts/2025-04-07-ros_project_templating.md",
+    "_posts/2025-04-07-picarx.md",
     "_posts/2025-04-07-elec390.md",
+    "_posts/2023-11-25-freertos_uart.md",
+    "_tabs/about.md",
+    "_posts/2025-05-12-vga_char_displ.md",
+    "_site/posts/vga_char_displ/index.html",
+    "_site/posts/vga_char_displ",
+    "_site/posts/2025-05-12-vga_char_displ/index.html",
+    "_site/posts/2025-05-12-vga_char_displ",
     "_posts/2025-10-19-crsf_driver.md",
+    "_posts/2024-12-1-linux_dotfiles.md",
+    "_posts/2025-05-07-quartus_linux.md",
+    "_site/posts/quartus_linux/index.html",
+    "_site/posts/quartus_linux",
+    "_site/categories/guides/index.html",
+    "_site/categories/guides",
+    "_site/posts/2025-05-07-quartus_linux/index.html",
+    "_site/posts/2025-05-07-quartus_linux",
+    "_posts/2025-1-19-usbdevice.md",
+    "_posts/2025-12-24-planner_comparison.md",
+    "_posts/2024-3-10-freertos_canbus.md",
+    "_posts/2025-04-18-miniSRC.md",
+    "_posts/2025-1-26-qset_armfw.md",
+    "_posts/2025-1-11-qset_armv1.md",
+    "_posts/2024-11-8-embedded_rust.md",
+    "_posts/2024-3-27-qfsae_vcu.md",
+    "_posts/2023-10-30-stm32_cmake.md",
+    "_posts/2024-3-10-freertos_adc.md",
+    "_posts/2023-10-4-vhdl_debouncer.md",
+    "_posts/2023-8-30-baremetal_blink.md",
+    "_posts/2023-4-26-vhdlPong.md",
+    "_posts/2023-2-28-vhdl8bitdipswitch.md",
+    "_posts/2023-1-2-fsaecal.md",
+    "_posts/2022-12-23-esp32_7segdisplay.md",
+    "_posts/2022-6-25-CNCwiring.md",
     "_site/assets/capstone/crsf/echo_mode.png",
+    "_site/assets/capstone/crsf/echo_batt.png",
     "assets/capstone/crsf/echo_mode.png",
     "_site/assets/capstone/crsf/Pasted image.png",
     "assets/capstone/crsf/Pasted image.png",
-    "_site/assets/capstone/crsf/echo_batt.png",
     "assets/capstone/crsf/echo_batt.png",
     "_site/assets/capstone/crsf/echo.png",
     "assets/capstone/crsf/echo.png",
-    "_site/assets/capstone/crsf",
-    "_site/assets/capstone",
-    "assets/capstone/crsf",
-    "assets/capstone",
-    "_site/posts/crsf_driver/index.html",
-    "_site/posts/crsf_driver",
-    "_site/posts/ros_project_templating/index.html",
-    "_site/posts/ros_project_templating",
-    "_site/posts/picarx/index.html",
-    "_site/posts/picarx",
     "_site/assets/fpga/vga_text_display/sync_pulse_measured.png",
-    "_site/assets/fpga/vga_text_display/sync_pulse.png",
-    "_posts/2024-3-10-freertos_adc.md",
-    "_posts/2024-3-27-qfsae_vcu.md",
-    "_posts/2025-04-07-ros_project_templating.md",
-    "_posts/2025-05-12-vga_char_displ.md",
-    "_posts/2025-05-07-quartus_linux.md",
-    "_posts/2025-04-07-picarx.md",
-    "_posts/2025-04-18-miniSRC.md",
-    "_tabs/about.md",
-    "_tabs/archives.md",
-    "_tabs/categories.md",
-    "_tabs/tags.md",
-    "_posts/2023-10-4-vhdl_debouncer.md",
-    "_posts/2024-12-1-linux_dotfiles.md",
-    "_posts/2024-11-8-embedded_rust copy.md",
-    "_posts/2024-8-8-qfsae_vcu.md",
-    "_posts/2023-11-25-freertos_uart copy.md",
-    "_posts/2023-10-30-stm32_cmake.md",
-    "_posts/2024-12-8-freertos_adc.md",
-    "_posts/2024-02-14-PD_jekyll_workshop.md",
-    "_posts/2024-02-1-VCU_V1_PCB.md",
-    "_posts/2023-11-25-freertos_uart.md",
-    "_posts/2024-3-4-fsae_vcuv2.md",
-    "_posts/2024-12-8-freertos_canbus copy.md"
+    "_site/assets/fpga/vga_text_display/sync_pulse.png"
   ]
 }

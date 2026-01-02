@@ -1,7 +1,7 @@
 ---
 title: STM32 FreeRTOS CAN Bus
 date: 2024-1-4
-categories: [Firmware]
+categories: [Firmware, STM32]
 tags: [STM32, CMake, FreeRTOS]
 author: Jacob
 ---

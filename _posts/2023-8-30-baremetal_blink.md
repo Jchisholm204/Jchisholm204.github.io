@@ -1,7 +1,7 @@
 ---
 title: STM32 Bare Metal Blinky
 date: 2023-8-30
-categories: [Firmware]
+categories: [Firmware, STM32]
 tags: [STM32]
 author: Jacob
 image:

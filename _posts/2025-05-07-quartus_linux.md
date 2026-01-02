@@ -1,11 +1,11 @@
 ---
 title: "Guide: Using Quartus on Linux"
+description: "A short guide on how to use Altera Quartus on Fedora 40/41."
 markdown: kramdown
 date: 2025-05-07
 categories:
   - HDL
   - Guides
-  - Linux
 tags:
   - Linux
   - Verilog
@@ -14,17 +14,17 @@ author:
 ---
 
 Linux and Windows are like two sides of the same coin.
-Most programs will function perfectly on either.
-Some programs even seem to prefer Linux over Windows.
+Most programs will function perfectly on either OS,
+some programs even seem to prefer Linux over Windows.
 However, there a few programs that simply refuse to work correctly on Linux, with Altera Quartus being one of them.
 
 
-Luckily, all of the problems related to running Quartus on Linux are caused by its Graphical Interface (GUI). 
-Another lucky fact is the Quartus is capable of functioning without a GUI.
-Thus, it is possible to easily use Quartus on Linux. 
+Luckily, all of the problems related to running Quartus on Linux appear to be caused by its Graphical User Interface (GUI). 
+Another lucky fact is that Quartus is capable of performing basic functionality without a GUI.
+Thus, it is possible to have a functioning version of Quartus on Linux with 'relative' ease. 
 
 >**Note**:
->This guide has been tested on Fedora 40.
+>This guide has been tested on Fedora 40/41 with `Quartus 13.0.1`.
 >However, it should work on other Linux distributions without issue.
 {: .prompt-warning}
 
@@ -47,6 +47,7 @@ DATE = "21:29:30  April 01, 2025"
 
 PROJECT_REVISION = "miniSRC"
 ```
+{: file="project.qpf" }
 
 
 The second file contains all of the information related to the project, including files, pin maps, and the name of the top level entity.
@@ -76,6 +77,7 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 ```
+{: file="project.qsf" }
 
 #### Setting the Device
 The top two lines in the above file tell Quartus which device it is fabricating the code for.
@@ -89,7 +91,7 @@ The above project is setup for the Cyclone II onboard my personal DE2 developmen
 Note that the device and model number must be an exact match for the target FPGA.
 
 #### Setting the Top Level Entity
-The top level entity is the highest design in the project.
+The top level entity is the highest level design in the project.
 All other entities in the design are sub entities of the top level entity.
 The name top level entity can be set with the following line:
 
@@ -232,6 +234,7 @@ Building Quartus Project...
 Compiling ./miniSRC.qpf
 
 ```
+{: .nolineno }
 
 If you do not execute the command from a path containing a Quartus project file, you will be presented with an output similar to the following:
 
@@ -241,6 +244,7 @@ quartus_linux on  main
 Quartus project files not found.
 Please run this script from the project base directory
 ```
+{: .nolineno }
 
 #### Uploading/Flashing
 To flash/upload the project to the board, execute the following command:
@@ -248,6 +252,7 @@ To flash/upload the project to the board, execute the following command:
 ```shell
 qmk flash
 ```
+{: .nolineno }
 
 >**Warning**
 >You must build the project before attempting to flash.
@@ -279,6 +284,7 @@ Info: Processing ended: Thu May  8 16:23:13 2025
 Info: Elapsed time: 00:00:03
 Info: Total CPU time (on all processors): 00:00:00
 ```
+{: .nolineno }
 
 If a board is not connected, then you will get an output similar to the following:
 
@@ -288,6 +294,7 @@ MiniSRC on  main [!?] via V took 2s
 1 : ./miniSRC.qpf
 Error (213013): Programming hardware cable not detected
 ```
+{: .nolineno }
 ### QMK Code
 Below is the code for the main QMK function. 
 Feel free to modify this function to suit your own needs.
@@ -356,8 +363,13 @@ export function qmk(){
     fi
 }
 ```
+{: file="quartus_linux.zsh" }
 
 ### Feature List
 - Building Quartus Projects
 - Uploading to FPGAs
 - Selecting between multiple projects
+
+### To-Do
+- Device pin management
+- Project file creation

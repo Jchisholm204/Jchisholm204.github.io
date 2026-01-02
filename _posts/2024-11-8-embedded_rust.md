@@ -1,7 +1,7 @@
 ---
 title: STM32 Embedded Rust
 date: 2024-11-8
-categories: [Firmware]
+categories: [Firmware, STM32]
 tags: [STM32, Rust]
 author: Jacob
 image:

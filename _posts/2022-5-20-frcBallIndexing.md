@@ -1,7 +1,7 @@
 ---
 title: FRC Ball Indexing
 date: 2022-5-20
-categories: [Robotics]
+categories: [Robotics, First Robotics Competition]
 tags: [Automation, FRC, Motion Control]
 author: Jacob
 image:
