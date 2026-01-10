@@ -25,13 +25,18 @@ Thus, it is possible to have a functioning version of Quartus on Linux with 'rel
 
 >**Note**:
 >This guide has been tested on Fedora 40/41 with `Quartus 13.0.1`.
->However, it should work on other Linux distributions without issue.
+>However, it should work on other Linux/Unix distributions without issue.
 {: .prompt-warning}
 
 The following guide explains how to create, manage, build, and upload a Quartus project to an FPGA without the use of the Quartus GUI.
 
 ## Creating a Quartus Project
 The first step in creating a Quartus project is to understand the two files Quartus uses to describe its projects.
+
+> **Tip:** 
+> The following section details how to manually set up a Quartus project.
+> For installing and using QMK, skip to [QMK/Installing](#quartus-make-qmk)
+{:.prompt-tip}
 
 ### Quartus Project Files
 The first file is largely useless.
@@ -201,10 +206,17 @@ To make dealing with Quartus projects easier, I created QMK.
 QMK is a small ZSH script that works similarly to a Makefile.
 
 ### Installing
-First, install Quartus from the Altera/Intel website.
-Do not attempt to launch Quartus, it will not work.
+First, install Quartus from the Altera/Intel website and ensure that the binary folder is accessible from path.
+The binary folder can typically be found under `~/altera/{version}/quartus/bin`.
+If using a newer version, it may also be present under `~/IntelFPGA/{version}/quartus/bin`.
+After installing, do not attempt to launch Quartus, it will not work.
 
-After installing Quartus, clone the qmk repository from [GitHub](https://github.com/Jchisholm204/quartus_linux). 
+> **Note:** 
+> I installed Quartus to the home directory, thus my base path is `/home/jacob/`, or `~`.
+> If Quartus was installed to a different directory, replace `~` with your base install path.
+{:.prompt-tip}
+
+After installing Quartus, clone the qmk repository from [GitHub: Jchisholm204/quartus_linux](https://github.com/Jchisholm204/quartus_linux). 
 Then, either source the `quartus_linux.zsh` file, or add the following line to your `zshrc`.
 
 ```zsh
@@ -365,11 +377,15 @@ export function qmk(){
 ```
 {: file="quartus_linux.zsh" }
 
-### Feature List
+#### Feature List
 - Building Quartus Projects
 - Uploading to FPGAs
 - Selecting between multiple projects
 
-### To-Do
+#### To-Do
 - Device pin management
 - Project file creation
+
+
+
+*Published as of commit [6a42e73](https://github.com/Jchisholm204/quartus_linux/tree/6a42e7319e21996b2ff5466685ea5886d6a9f26d)*
