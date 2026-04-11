@@ -1,7 +1,7 @@
 ---
 title: Liftoff Autonomous Drone Simulator
 date: 2026-01-13
-categories: [k, Scout]
+categories: [Scout]
 tags: [STM32, FreeRTOS, Scout]
 author: Jacob
 hidden: false
